@@ -32,17 +32,20 @@ const ManageRequests = () => {
     return () => { isMounted = false; };
   }, [axiosSecure]);
 
-  // Update request status
-  const updateRequestStatus = async (reqId, status) => {
+  // Handle Accept/Reject
+  const handleAction = async (reqId, action) => {
     try {
       setRequests(prev =>
-        prev.map(r => (r._id === reqId ? { ...r, requestStatus: status } : r))
+        prev.map(r => (r._id === reqId ? { ...r, requestStatus: action } : r))
       );
-      await axiosSecure.patch(`/requests/${reqId}`, { requestStatus: status });
-      Swal.fire('Success', `Request ${status}`, 'success');
+
+      await axiosSecure.patch(`/requests/${reqId}`, { requestStatus: action });
+
+      Swal.fire('Success', `Request ${action}`, 'success');
     } catch (err) {
       console.error(err);
       Swal.fire('Error', 'Failed to update request', 'error');
+      // Revert status on error
       setRequests(prev =>
         prev.map(r => (r._id === reqId ? { ...r, requestStatus: 'pending' } : r))
       );
@@ -51,7 +54,6 @@ const ManageRequests = () => {
 
   if (loading) return <Loading />;
 
-  // Apply filter
   const filteredRequests =
     filter === 'all'
       ? requests
@@ -62,7 +64,7 @@ const ManageRequests = () => {
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Requests</h2>
 
       {/* Filter */}
-      <div className="mb-6 flex items-center gap-4">
+      <div className="mb-4 flex items-center gap-4">
         <label className="font-semibold">Filter by status:</label>
         <select
           value={filter}
@@ -79,77 +81,71 @@ const ManageRequests = () => {
       {filteredRequests.length === 0 ? (
         <p className="text-gray-500 text-center">No requests to display.</p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {filteredRequests.map(req => (
-            <div
-              key={req._id}
-              className="bg-white shadow-lg rounded-xl p-5 hover:shadow-xl transition flex flex-col justify-between"
-            >
-              {/* Header */}
-              <div className="flex items-center mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold">{req.userName}</h3>
-                  <p className="text-gray-500 text-sm">{req.userEmail}</p>
-                  <p className="text-gray-700 mt-1 capitalize">{req.requestType}</p>
-                </div>
-                <div className="ml-3">
-                  {req.requestStatus === 'approved' && (
-                    <FaCheckCircle className="text-green-500" size={24} />
-                  )}
-                  {req.requestStatus === 'rejected' && (
-                    <FaTimesCircle className="text-red-500" size={24} />
-                  )}
-                  {req.requestStatus === 'pending' && (
-                    <FaClock className="text-yellow-500" size={24} />
-                  )}
-                </div>
-              </div>
-
-              {/* Status Badge */}
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-                  req.requestStatus === 'approved'
-                    ? 'bg-green-100 text-green-700'
-                    : req.requestStatus === 'rejected'
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                }`}
-              >
-                {req.requestStatus.toUpperCase()}
-              </span>
-
-              {/* Time */}
-              <p className="text-gray-400 text-sm mb-4">
-                {new Date(req.requestTime).toLocaleString()}
-              </p>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => updateRequestStatus(req._id, 'approved')}
-                  disabled={req.requestStatus !== 'pending'}
-                  className={`flex-1 px-3 py-2 rounded text-white font-medium transition ${
-                    req.requestStatus !== 'pending'
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-green-500 hover:bg-green-600'
-                  }`}
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => updateRequestStatus(req._id, 'rejected')}
-                  disabled={req.requestStatus !== 'pending'}
-                  className={`flex-1 px-3 py-2 rounded text-white font-medium transition ${
-                    req.requestStatus !== 'pending'
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-red-500 hover:bg-red-600'
-                  }`}
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User Name</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Type</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Time</th>
+                <th className="px-6 py-3 text-center text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {filteredRequests.map(req => (
+                <tr key={req._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{req.userName}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{req.userEmail}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">{req.requestType}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        req.requestStatus === 'approved'
+                          ? 'bg-green-100 text-green-700'
+                          : req.requestStatus === 'rejected'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-yellow-100 text-yellow-700'
+                      }`}
+                    >
+                      {req.requestStatus.toUpperCase()}
+                      <span className="ml-2">
+                        {req.requestStatus === 'approved' && <FaCheckCircle className="inline" />}
+                        {req.requestStatus === 'rejected' && <FaTimesCircle className="inline" />}
+                        {req.requestStatus === 'pending' && <FaClock className="inline" />}
+                      </span>
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(req.requestTime).toLocaleString()}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center flex justify-center gap-2">
+                    <button
+                      onClick={() => handleAction(req._id, 'approved')}
+                      disabled={req.requestStatus !== 'pending'}
+                      className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
+                        req.requestStatus !== 'pending'
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-green-500 hover:bg-green-600'
+                      }`}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleAction(req._id, 'rejected')}
+                      disabled={req.requestStatus !== 'pending'}
+                      className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
+                        req.requestStatus !== 'pending'
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-red-500 hover:bg-red-600'
+                      }`}
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

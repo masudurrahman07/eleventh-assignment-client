@@ -2,7 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Loading from '../../components/Loading';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts';
 import { FaUsers, FaMoneyBillWave, FaShoppingCart, FaCheckCircle } from 'react-icons/fa';
 
 const PlatformStats = () => {
@@ -17,8 +25,8 @@ const PlatformStats = () => {
     const fetchStats = async () => {
       try {
         const res = await axiosSecure.get('/admin/dashboard');
-        const orders = await axiosSecure.get('/orders/my');
-        const totalPayments = orders.data.reduce((sum, o) => sum + Number(o.price || 0), 0);
+        const ordersRes = await axiosSecure.get('/orders/my');
+        const totalPayments = ordersRes.data.reduce((sum, o) => sum + Number(o.price || 0), 0);
 
         if (isMounted) {
           setStats({ ...res.data, totalPayments });
@@ -50,31 +58,34 @@ const PlatformStats = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition transform hover:-translate-y-1">
           <FaMoneyBillWave className="text-green-500 text-3xl" />
           <div>
-            <p className="text-gray-500">Total Payments</p>
-            <p className="text-xl font-bold text-green-600">{stats.totalPayments}</p>
+            <p className="text-gray-500 font-medium">Total Payments</p>
+            <p className="text-xl font-bold text-green-600">${stats.totalPayments.toLocaleString()}</p>
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition transform hover:-translate-y-1">
           <FaUsers className="text-blue-500 text-3xl" />
           <div>
-            <p className="text-gray-500">Total Users</p>
+            <p className="text-gray-500 font-medium">Total Users</p>
             <p className="text-xl font-bold text-blue-600">{stats.totalUsers}</p>
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition transform hover:-translate-y-1">
           <FaShoppingCart className="text-yellow-500 text-3xl" />
           <div>
-            <p className="text-gray-500">Pending Orders</p>
+            <p className="text-gray-500 font-medium">Pending Orders</p>
             <p className="text-xl font-bold text-yellow-600">{stats.pendingOrders}</p>
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition transform hover:-translate-y-1">
           <FaCheckCircle className="text-green-400 text-3xl" />
           <div>
-            <p className="text-gray-500">Delivered Orders</p>
+            <p className="text-gray-500 font-medium">Delivered Orders</p>
             <p className="text-xl font-bold text-green-700">{stats.deliveredOrders}</p>
           </div>
         </div>
@@ -83,12 +94,12 @@ const PlatformStats = () => {
       {/* Chart */}
       <div className="bg-white shadow-lg rounded-xl p-5 hover:shadow-2xl transition">
         <h3 className="text-lg font-bold mb-4 text-gray-700">Visual Overview</h3>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={350}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
+            <Tooltip formatter={(value) => value.toLocaleString()} />
             <Bar dataKey="value" fill="#3182ce" barSize={40} radius={[10, 10, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
