@@ -1,13 +1,14 @@
 // src/pages/Dashboard/User/MyProfile.jsx
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import Loading from '../../../components/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Loading from '../../components/Loading';
 import Swal from 'sweetalert2';
-import { useAuth } from '../../../auth/useAuth';
+import useAuth from '../../auth/useAuth';
+import { FaUserAlt, FaEnvelope, FaMapMarkerAlt, FaIdBadge, FaUserShield } from 'react-icons/fa';
 
 const MyProfile = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth(); // logged-in user info
+  const { user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -46,40 +47,67 @@ const MyProfile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-4">My Profile</h2>
+    <div className="max-w-4xl mx-auto py-10">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">My Profile</h2>
 
-      <div className="bg-white shadow rounded p-6 space-y-4">
-        <div className="flex items-center space-x-4">
-          <img src={profile.profileImage} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
-          <div>
-            <p className="font-semibold">{profile.name}</p>
-            <p className="text-gray-500">{profile.email}</p>
-          </div>
+      <div className="bg-linear-to-r from-white to-gray-50 shadow-lg rounded-2xl p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+        {/* Profile Image */}
+        <div className="shrink-0">
+          <img
+            src={profile.profileImage || 'https://i.ibb.co/0s3pdnc/default-user.png'}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-md"
+          />
         </div>
 
-        <p><span className="font-semibold">Address:</span> {profile.address}</p>
-        <p><span className="font-semibold">Role:</span> {profile.role}</p>
-        <p><span className="font-semibold">Status:</span> {profile.status}</p>
-        {profile.role === 'chef' && <p><span className="font-semibold">Chef ID:</span> {profile.chefId}</p>}
+        {/* Profile Details */}
+        <div className="flex-1 space-y-3">
+          <h3 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+            <FaUserAlt className="text-blue-500" /> {profile.name}
+          </h3>
 
-        <div className="space-x-4 mt-4">
-          {profile.role !== 'chef' && profile.role !== 'admin' && (
-            <button
-              onClick={() => handleRoleRequest('chef')}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Be a Chef
-            </button>
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaEnvelope className="text-green-500" /> {profile.email}
+          </p>
+
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaMapMarkerAlt className="text-red-500" /> {profile.address || 'N/A'}
+          </p>
+
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaUserShield className="text-purple-500" /> Role: <span className="font-medium">{profile.role || 'user'}</span>
+          </p>
+
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaIdBadge className="text-yellow-500" /> Status: <span className="font-medium">{profile.status || 'active'}</span>
+          </p>
+
+          {profile.role === 'chef' && (
+            <p className="flex items-center gap-2 text-gray-600">
+              <FaIdBadge className="text-orange-500" /> Chef ID: <span className="font-medium">{profile.chefId || 'N/A'}</span>
+            </p>
           )}
-          {profile.role !== 'admin' && (
-            <button
-              onClick={() => handleRoleRequest('admin')}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
-              Be an Admin
-            </button>
-          )}
+
+          {/* Role Request Buttons */}
+          <div className="flex flex-wrap gap-4 mt-4">
+            {profile.role !== 'chef' && profile.role !== 'admin' && (
+              <button
+                onClick={() => handleRoleRequest('chef')}
+                className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-transform"
+              >
+                Request Chef Role
+              </button>
+            )}
+
+            {profile.role !== 'admin' && (
+              <button
+                onClick={() => handleRoleRequest('admin')}
+                className="bg-linear-to-r from-green-500 to-green-600 text-white px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-transform"
+              >
+                Request Admin Role
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

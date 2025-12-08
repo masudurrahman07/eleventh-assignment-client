@@ -1,23 +1,28 @@
 // src/pages/Dashboard/User/MyOrders.jsx
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useAuth } from '../../../auth/useAuth';
-import Loading from '../../../components/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAuth from '../../auth/useAuth';
+import Loading from '../../components/Loading';
 import Swal from 'sweetalert2';
-import OrderCard from '../../../components/OrderCard';
+import OrderCard from '../../components/OrderCard';
 
 const MyOrders = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [orderStats, setOrderStats] = useState({ total: 0, pending: 0, delivered: 0 });
 
-  // Fetch user's orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axiosSecure.get(`/orders/my`); // backend should filter by user email
-        setOrders(res.data);
+        const res = await axiosSecure.get('/orders/my');
+        const ordersData = Array.isArray(res.data) ? res.data : [];
+        setOrders(ordersData);
+
+        const pending = ordersData.filter(o => o.orderStatus === 'pending').length;
+        const delivered = ordersData.filter(o => o.orderStatus === 'delivered').length;
+        setOrderStats({ total: ordersData.length, pending, delivered });
       } catch (err) {
         console.error(err);
         Swal.fire('Error', 'Failed to fetch orders', 'error');
@@ -31,13 +36,30 @@ const MyOrders = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="max-w-5xl mx-auto py-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-4">My Orders</h2>
+    <div className="max-w-6xl mx-auto py-10 space-y-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">My Orders</h2>
 
+      {/* Order Summary */}
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white p-6 rounded-2xl shadow text-center hover:shadow-xl transition">
+          <p className="text-gray-500">Total Orders</p>
+          <p className="text-2xl font-bold text-gray-800">{orderStats.total}</p>
+        </div>
+        <div className="bg-white p-6 rounded-2xl shadow text-center hover:shadow-xl transition">
+          <p className="text-gray-500">Pending Orders</p>
+          <p className="text-2xl font-bold text-yellow-500">{orderStats.pending}</p>
+        </div>
+        <div className="bg-white p-6 rounded-2xl shadow text-center hover:shadow-xl transition">
+          <p className="text-gray-500">Delivered Orders</p>
+          <p className="text-2xl font-bold text-green-500">{orderStats.delivered}</p>
+        </div>
+      </div>
+
+      {/* Orders List */}
       {orders.length === 0 ? (
-        <p className="text-gray-500">You have no orders yet.</p>
+        <p className="text-gray-500 text-center">You have no orders yet.</p>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-6">
           {orders.map(order => (
             <OrderCard key={order._id} order={order} />
           ))}

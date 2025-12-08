@@ -1,8 +1,9 @@
 // src/pages/Dashboard/Admin/PlatformStats.jsx
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import Loading from '../../../components/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Loading from '../../components/Loading';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { FaUsers, FaMoneyBillWave, FaShoppingCart, FaCheckCircle } from 'react-icons/fa';
 
 const PlatformStats = () => {
   const axiosSecure = useAxiosSecure();
@@ -10,21 +11,30 @@ const PlatformStats = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!axiosSecure) return;
+    let isMounted = true;
+
     const fetchStats = async () => {
       try {
-        const res = await axiosSecure.get('/dashboard/stats');
-        setStats(res.data);
+        const res = await axiosSecure.get('/admin/dashboard');
+        const orders = await axiosSecure.get('/orders/my');
+        const totalPayments = orders.data.reduce((sum, o) => sum + Number(o.price || 0), 0);
+
+        if (isMounted) {
+          setStats({ ...res.data, totalPayments });
+        }
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
+
     fetchStats();
+    return () => { isMounted = false; };
   }, [axiosSecure]);
 
   if (loading) return <Loading />;
-
   if (!stats) return <p className="text-center text-gray-500">No data available.</p>;
 
   const chartData = [
@@ -35,32 +45,53 @@ const PlatformStats = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto py-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Platform Statistics</h2>
+    <div className="max-w-7xl mx-auto py-6 px-4 space-y-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-4">Platform Statistics</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-4 bg-white rounded shadow">
-          <h3 className="text-lg font-bold mb-2">Total Numbers</h3>
-          <ul className="space-y-2 text-gray-700">
-            <li>Total Payments: <span className="font-semibold">{stats.totalPayments}</span></li>
-            <li>Total Users: <span className="font-semibold">{stats.totalUsers}</span></li>
-            <li>Pending Orders: <span className="font-semibold">{stats.pendingOrders}</span></li>
-            <li>Delivered Orders: <span className="font-semibold">{stats.deliveredOrders}</span></li>
-          </ul>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+          <FaMoneyBillWave className="text-green-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Total Payments</p>
+            <p className="text-xl font-bold text-green-600">{stats.totalPayments}</p>
+          </div>
         </div>
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+          <FaUsers className="text-blue-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Total Users</p>
+            <p className="text-xl font-bold text-blue-600">{stats.totalUsers}</p>
+          </div>
+        </div>
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+          <FaShoppingCart className="text-yellow-500 text-3xl" />
+          <div>
+            <p className="text-gray-500">Pending Orders</p>
+            <p className="text-xl font-bold text-yellow-600">{stats.pendingOrders}</p>
+          </div>
+        </div>
+        <div className="bg-white shadow-lg rounded-xl p-5 flex items-center gap-4 hover:shadow-2xl transition">
+          <FaCheckCircle className="text-green-400 text-3xl" />
+          <div>
+            <p className="text-gray-500">Delivered Orders</p>
+            <p className="text-xl font-bold text-green-700">{stats.deliveredOrders}</p>
+          </div>
+        </div>
+      </div>
 
-        <div className="p-4 bg-white rounded shadow">
-          <h3 className="text-lg font-bold mb-2">Visual Chart</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#3182ce" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      {/* Chart */}
+      <div className="bg-white shadow-lg rounded-xl p-5 hover:shadow-2xl transition">
+        <h3 className="text-lg font-bold mb-4 text-gray-700">Visual Overview</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="value" fill="#3182ce" barSize={40} radius={[10, 10, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

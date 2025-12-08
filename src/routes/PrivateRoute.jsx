@@ -4,22 +4,24 @@ import { Navigate, useLocation } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
 import Loading from '../components/Loading';
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    // Show loading spinner while checking auth status
-    return <Loading />;
-  }
+  if (loading) return <Loading />;
 
   if (!user) {
-    // If user is not logged in, redirect to login page
+    // Not logged in
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If user is logged in, render the protected component
-  return children;
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // Logged in but role not allowed
+    return <Navigate to="/" replace />;
+  }
+
+  // Force remount when user role changes
+  return React.cloneElement(children, { key: user.role });
 };
 
 export default PrivateRoute;

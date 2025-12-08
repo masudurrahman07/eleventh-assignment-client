@@ -1,10 +1,10 @@
 // src/pages/Dashboard/User/MyReviews.jsx
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useAuth } from '../../../auth/useAuth';
-import Loading from '../../../components/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import useAuth  from '../../auth/useAuth';
+import Loading from '../../components/Loading';
 import Swal from 'sweetalert2';
-import ReviewCard from '../../../components/ReviewCard';
+import ReviewCard from '../../components/ReviewCard';
 
 const MyReviews = () => {
   const axiosSecure = useAxiosSecure();

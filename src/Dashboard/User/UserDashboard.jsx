@@ -1,54 +1,42 @@
 // src/pages/Dashboard/User/UserDashboard.jsx
-import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
-import Loading from '../../components/Loading';
-import Swal from 'sweetalert2';
+import React, { useState } from 'react';
+import MyProfile from '../User/MyProfile';
+import MyOrders from '../User/MyOrders';
+import MyReviews from '../User/MyReview';
+import MyFavorites from '../User/MyFavorites';
 
 const UserDashboard = () => {
-  const axiosSecure = useAxiosSecure(); // secure axios instance
-  const [userStats, setUserStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('profile'); // default tab
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Example API: get all orders of logged-in user
-        const res = await axiosSecure.get('/orders/my'); 
-        const orders = res.data;
-
-        const pending = orders.filter(o => o.orderStatus === 'pending').length;
-        const delivered = orders.filter(o => o.orderStatus === 'delivered').length;
-
-        setUserStats({ totalOrders: orders.length, pending, delivered });
-      } catch (err) {
-        console.error(err);
-        Swal.fire('Error', 'Failed to fetch your orders', 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, [axiosSecure]);
-
-  if (loading) return <Loading />;
+  const tabs = [
+    { id: 'profile', label: 'My Profile', component: <MyProfile /> },
+    { id: 'orders', label: 'My Orders', component: <MyOrders /> },
+    { id: 'reviews', label: 'My Reviews', component: <MyReviews /> },
+    { id: 'favorites', label: 'Favorite Meals', component: <MyFavorites /> },
+  ];
 
   return (
-    <div className="max-w-5xl mx-auto py-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Welcome to Your Dashboard</h2>
+    <div className="max-w-6xl mx-auto py-6">
+      <h2 className="text-2xl font-bold mb-4">User Dashboard</h2>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded shadow text-center">
-          <p className="text-gray-500">Total Orders</p>
-          <p className="text-xl font-semibold">{userStats.totalOrders}</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow text-center">
-          <p className="text-gray-500">Pending Orders</p>
-          <p className="text-xl font-semibold">{userStats.pending}</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow text-center">
-          <p className="text-gray-500">Delivered Orders</p>
-          <p className="text-xl font-semibold">{userStats.delivered}</p>
-        </div>
+      {/* Tabs */}
+      <div className="flex flex-wrap mb-6 border-b">
+        {tabs.map(tab => (
+          <button
+            key={tab.id}
+            className={`mr-4 pb-2 border-b-2 ${
+              activeTab === tab.id ? 'border-blue-500 text-blue-600 font-semibold' : 'border-transparent text-gray-600'
+            }`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Active Tab Content */}
+      <div className="space-y-6">
+        {tabs.find(tab => tab.id === activeTab)?.component}
       </div>
     </div>
   );

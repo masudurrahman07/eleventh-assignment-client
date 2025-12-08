@@ -1,8 +1,8 @@
 // src/pages/Dashboard/Chef/CreateMeal.jsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useAuth } from '../../../auth/useAuth';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import  useAuth  from '../../auth/useAuth';
 import Swal from 'sweetalert2';
 
 const CreateMeal = () => {

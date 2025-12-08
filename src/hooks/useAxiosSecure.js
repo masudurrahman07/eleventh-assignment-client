@@ -1,23 +1,36 @@
 // src/hooks/useAxiosSecure.js
 import axios from 'axios';
-import useToken from './useToken';
 
 const useAxiosSecure = () => {
-  const [token] = useToken(); // get the JWT token
-
-  const axiosSecure = axios.create({
-    baseURL: 'http://localhost:3000', // your backend URL
+  const instance = axios.create({
+    baseURL: 'http://localhost:3000',
+    headers: { 'Content-Type': 'application/json' },
   });
 
-  // Add token to every request
-  axiosSecure.interceptors.request.use(config => {
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+  // Add token on each request
+  instance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token');
+      if (token) config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+
+  // Auto logout on 401
+  instance.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      if (err.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+      return Promise.reject(err);
     }
-    return config;
-  });
+  );
 
-  return axiosSecure;
+  return instance;
 };
 
 export default useAxiosSecure;

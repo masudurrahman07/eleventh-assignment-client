@@ -12,7 +12,7 @@ const Footer = () => {
   return (
     <motion.footer
       className="
-        bg-gradient-to-r from-emerald-400 to-teal-500 
+        bg-linear-to-r from-emerald-400 to-teal-500 
         shadow-lg text-white mt-16 
         transition-all duration-300 
         hover:from-teal-400 hover:to-emerald-500

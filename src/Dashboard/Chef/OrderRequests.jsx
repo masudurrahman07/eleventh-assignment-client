@@ -1,8 +1,8 @@
 // src/pages/Dashboard/Chef/OrderRequests.jsx
 import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import { useAuth } from '../../../auth/useAuth';
-import Loading from '../../../components/Loading';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import  useAuth  from '../../auth/useAuth';
+import Loading from '../../components/Loading';
 import Swal from 'sweetalert2';
 
 const OrderRequests = () => {
