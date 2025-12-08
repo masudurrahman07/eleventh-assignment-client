@@ -37,10 +37,10 @@ const OrderCard = ({ order }) => {
         <p><span className="font-semibold">Status:</span> {displayOrderStatus}</p>
         <p><span className="font-semibold">Price:</span> ${order.price}</p>
         <p><span className="font-semibold">Quantity:</span> {order.quantity}</p>
-        <p><span className="font-semibold">Delivery Time:</span> {new Date(order.orderTime || order.createdAt).toLocaleString()}</p>
+        <p><span className="font-semibold">Order Time:</span> {new Date(order.orderTime || order.createdAt).toLocaleString()}</p>
         <p><span className="font-semibold">Chef:</span> {chefName}</p>
         <p><span className="font-semibold">Chef ID:</span> {chefId}</p>
-        <p><span className="font-semibold">Payment:</span> {displayPaymentStatus}</p>
+        <p><span className="font-semibold">Payment Status:</span> {displayPaymentStatus}</p>
       </div>
 
       {/* Pay Button */}

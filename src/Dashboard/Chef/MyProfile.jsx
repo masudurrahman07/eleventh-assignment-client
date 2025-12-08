@@ -1,125 +1,115 @@
 // src/pages/Dashboard/Chef/MyProfile.jsx
-import React, { useEffect, useState } from "react";
-import useAuth from "../../auth/useAuth";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import Loading from "../../components/Loading";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from 'react';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Loading from '../../components/Loading';
+import Swal from 'sweetalert2';
+import useAuth from '../../auth/useAuth';
+import { FaUserAlt, FaEnvelope, FaMapMarkerAlt, FaIdBadge, FaUserShield } from 'react-icons/fa';
 
 const MyProfile = () => {
-  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: {}
-  });
-
-  // Fetch user profile ONCE
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await axiosSecure.get(`/users/${user.email}`);
-        reset({
-          name: res.data.name || "",
-          email: res.data.email || "",
-          address: res.data.address || "",
-          profileImage: res.data.profileImage || "",
-        });
+        setProfile(res.data);
       } catch (err) {
         console.error(err);
-        setMessage("Failed to load profile");
+        Swal.fire('Error', 'Failed to fetch profile', 'error');
       } finally {
         setLoading(false);
       }
     };
-
     fetchProfile();
-    // IMPORTANT: run only once to avoid reset loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onSubmit = async (data) => {
-    setUpdating(true);
-    setMessage("");
-
-    try {
-      const res = await axiosSecure.put(`/users/${user.email}`, data);
-      reset(res.data || data);
-      setMessage("Profile updated successfully!");
-    } catch (err) {
-      console.error(err);
-      setMessage("Update failed.");
-    } finally {
-      setUpdating(false);
-    }
-  };
+  }, [axiosSecure, user.email]);
 
   if (loading) return <Loading />;
 
+  const handleRoleRequest = async (roleType) => {
+    try {
+      const requestData = {
+        userName: profile.name,
+        userEmail: profile.email,
+        requestType: roleType,
+        requestStatus: 'pending',
+        requestTime: new Date().toISOString()
+      };
+      await axiosSecure.post('/requests', requestData);
+      Swal.fire('Success', `Your request to become ${roleType} has been sent!`, 'success');
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', 'Failed to send request', 'error');
+    }
+  };
+
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-xl shadow p-8 space-y-8">
-      <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
+    <div className="max-w-4xl mx-auto py-10">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">My Profile</h2>
 
-      {message && <p className="text-green-600 font-semibold">{message}</p>}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
-        {/* NAME */}
-        <div>
-          <label className="block text-gray-700 font-semibold mb-1">Name</label>
-          <input
-            {...register("name")}
-            type="text"
-            className="w-full border rounded-lg px-4 py-2"
+      <div className="bg-linear-to-r from-white to-gray-50 shadow-lg rounded-2xl p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
+        {/* Profile Image */}
+        <div className="shrink-0">
+          <img
+            src={profile.profileImage || 'https://i.ibb.co/0s3pdnc/default-user.png'}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-md"
           />
         </div>
 
-        {/* EMAIL (read only) */}
-        <div>
-          <label className="block text-gray-700 font-semibold mb-1">
-            Email (read-only)
-          </label>
-          <input
-            {...register("email")}
-            type="email"
-            readOnly
-            className="w-full border rounded-lg px-4 py-2 bg-gray-100 text-gray-500 cursor-not-allowed"
-          />
-        </div>
+        {/* Profile Details */}
+        <div className="flex-1 space-y-3">
+          <h3 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+            <FaUserAlt className="text-blue-500" /> {profile.name}
+          </h3>
 
-        {/* ADDRESS */}
-        <div>
-          <label className="block text-gray-700 font-semibold mb-1">Address</label>
-          <input
-            {...register("address")}
-            type="text"
-            className="w-full border rounded-lg px-4 py-2"
-          />
-        </div>
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaEnvelope className="text-green-500" /> {profile.email}
+          </p>
 
-        {/* PROFILE IMAGE */}
-        <div>
-          <label className="block text-gray-700 font-semibold mb-1">
-            Profile Image URL
-          </label>
-          <input
-            {...register("profileImage")}
-            type="text"
-            className="w-full border rounded-lg px-4 py-2"
-          />
-        </div>
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaMapMarkerAlt className="text-red-500" /> {profile.address || 'N/A'}
+          </p>
 
-        <button
-          type="submit"
-          disabled={updating}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg"
-        >
-          {updating ? "Updating..." : "Update Profile"}
-        </button>
-      </form>
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaUserShield className="text-purple-500" /> Role: <span className="font-medium">{profile.role || 'chef'}</span>
+          </p>
+
+          <p className="flex items-center gap-2 text-gray-600">
+            <FaIdBadge className="text-yellow-500" /> Status: <span className="font-medium">{profile.status || 'active'}</span>
+          </p>
+
+          {profile.role === 'chef' && (
+            <p className="flex items-center gap-2 text-gray-600">
+              <FaIdBadge className="text-orange-500" /> Chef ID: <span className="font-medium">{profile.chefId || 'N/A'}</span>
+            </p>
+          )}
+
+          {/* Role Request Buttons */}
+          <div className="flex flex-wrap gap-4 mt-4">
+            {profile.role !== 'chef' && profile.role !== 'admin' && (
+              <button
+                onClick={() => handleRoleRequest('chef')}
+                className="bg-linear-to-r from-blue-500 to-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-transform"
+              >
+                Request Chef Role
+              </button>
+            )}
+
+            {profile.role !== 'admin' && (
+              <button
+                onClick={() => handleRoleRequest('admin')}
+                className="bg-linear-to-r from-green-500 to-green-600 text-white px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-transform"
+              >
+                Request Admin Role
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
