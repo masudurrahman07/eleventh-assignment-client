@@ -15,21 +15,18 @@ const Meals = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortOrder, setSortOrder] = useState("asc"); // asc or desc
   const limit = 10;
 
   useEffect(() => {
     const fetchMeals = async () => {
       setLoading(true);
       try {
-        // Backend page cycling
-        const backendPage = ((page - 1) % 2) + 1;
         const res = await axios.get(
-          `http://localhost:3000/meals?page=${backendPage}&limit=${limit}`
+          `http://localhost:3000/meals?page=${page}&limit=${limit}`
         );
-        let fetchedMeals = res.data.meals || [];
 
-        // Sort client-side by price
+        let fetchedMeals = res.data.meals || [];
         fetchedMeals.sort((a, b) =>
           sortOrder === "asc" ? a.price - b.price : b.price - a.price
         );
@@ -57,7 +54,7 @@ const Meals = () => {
       </p>
     );
 
-  const totalPages = 4;
+  const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
@@ -83,8 +80,8 @@ const Meals = () => {
             font-medium text-gray-700 transition-all duration-300
           "
         >
-          <option value="asc">Price: Low to High</option>
-          <option value="desc">Price: High to Low</option>
+          <option value="asc">Price: Low → High</option>
+          <option value="desc">Price: High → Low</option>
         </select>
       </div>
 
@@ -102,7 +99,6 @@ const Meals = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            viewport={{ once: false }}
           >
             <MealCard meal={meal} />
           </motion.div>
