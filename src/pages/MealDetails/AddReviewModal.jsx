@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import useAuth from "../../auth/useAuth";
 
 const AddReviewModal = ({ mealId, onClose, onAdd }) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth(); // ✅ get token from auth context
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
@@ -24,9 +24,18 @@ const AddReviewModal = ({ mealId, onClose, onAdd }) => {
         date: new Date().toISOString()
       };
 
-      const res = await axios.post("http://localhost:3000/reviews", newReview);
+      // ✅ Send token in Authorization header
+      const res = await axios.post(
+        "http://localhost:3000/reviews",
+        newReview,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-      // Immediately show in frontend
+      // Immediately show new review in frontend
       onAdd({
         ...newReview,
         _id: res.data._id
@@ -34,7 +43,12 @@ const AddReviewModal = ({ mealId, onClose, onAdd }) => {
 
       onClose();
     } catch (err) {
-      Swal.fire("Error", "Something went wrong", "error");
+      console.error(err);
+      Swal.fire(
+        "Error",
+        err.response?.data?.message || "Something went wrong",
+        "error"
+      );
     }
   };
 
@@ -67,10 +81,16 @@ const AddReviewModal = ({ mealId, onClose, onAdd }) => {
         </div>
 
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          >
             Cancel
           </button>
-          <button onClick={handleSubmit} className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">
+          <button
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600"
+          >
             Submit
           </button>
         </div>

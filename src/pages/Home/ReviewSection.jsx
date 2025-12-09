@@ -1,50 +1,38 @@
 // src/pages/Home/ReviewSection.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
+import { FaPlus } from "react-icons/fa";
+import useAuth from "../../auth/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import ReviewCard from "../../components/ReviewCard";
 import Loading from "../../components/Loading";
 import AddReviewModal from "../MealDetails/AddReviewModal";
-import useAuth from "../../auth/useAuth";
-import Swal from "sweetalert2";
-import { FaPlus } from "react-icons/fa";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
-const ReviewSection = ({ mealId, onReady /* optional: parent can get API */ }) => {
+const ReviewSection = ({ mealId, onReady }) => {
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  // Provide parent with a small API so it can trigger the modal
-  useEffect(() => {
-    if (typeof onReady === "function") {
-      onReady({
-        open: () => setShowReviewModal(true),
-        close: () => setShowReviewModal(false),
-        refresh: fetchReviews, // eslint-disable-line no-use-before-define
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onReady]);
-
+  // Fetch reviews
   async function fetchReviews() {
     try {
       setLoading(true);
-      const url = mealId
-        ? `http://localhost:3000/reviews/${mealId}`
-        : `http://localhost:3000/reviews`;
-      const res = await axios.get(url);
+      const url = mealId ? `/reviews/meal/${mealId}` : "/reviews";
+      const res = await axiosSecure.get(url);
 
       const formatted = (res.data || [])
-        .map((r) => ({
+        .map(r => ({
           ...r,
-          _id: r._id || r.id,
-          reviewerName: r.reviewerName || r.name || "Anonymous",
+          _id: String(r._id),
+          reviewerName: r.reviewerName || "Anonymous",
           reviewerImage: r.reviewerImage || "https://i.ibb.co/0s3pdnc/default-user.png",
           date: r.date ? new Date(r.date) : new Date(),
         }))
@@ -52,30 +40,33 @@ const ReviewSection = ({ mealId, onReady /* optional: parent can get API */ }) =
 
       setReviews(formatted);
     } catch (err) {
-      console.error("Error fetching reviews:", err);
+      console.error("Fetch reviews error:", err);
+      Swal.fire("Error", "Failed to fetch reviews", "error");
       setReviews([]);
     } finally {
       setLoading(false);
     }
   }
 
+  // Parent control
+  useEffect(() => {
+    if (typeof onReady === "function") {
+      onReady({
+        open: () => setShowModal(true),
+        close: () => setShowModal(false),
+        refresh: fetchReviews,
+      });
+    }
+  }, [onReady]);
+
   useEffect(() => {
     fetchReviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mealId]);
 
   const handleAddReview = (newReview) => {
-    const formatted = {
-      ...newReview,
-      date: newReview.date ? new Date(newReview.date) : new Date(),
-      reviewerImage: newReview.reviewerImage || "https://i.ibb.co/0s3pdnc/default-user.png",
-      _id: newReview._id || Math.random().toString(36).slice(2),
-    };
-
-    // show new review on top
-    setReviews((prev) => [formatted, ...prev]);
+    setReviews(prev => [{ ...newReview, _id: String(newReview._id), date: new Date() }, ...prev]);
     Swal.fire("Success", "Review submitted!", "success");
-    setShowReviewModal(false);
+    setShowModal(false);
   };
 
   if (loading) return <Loading />;
@@ -91,10 +82,9 @@ const ReviewSection = ({ mealId, onReady /* optional: parent can get API */ }) =
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-12">
           <h2 className="text-4xl font-extrabold text-gray-900">Customer Reviews</h2>
-
           {user && (
             <button
-              onClick={() => setShowReviewModal(true)}
+              onClick={() => setShowModal(true)}
               className="mt-4 md:mt-0 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
             >
               <FaPlus /> Give Review
@@ -103,31 +93,26 @@ const ReviewSection = ({ mealId, onReady /* optional: parent can get API */ }) =
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.length > 0 ? (
-            reviews.map((review, index) => (
-              <motion.div
-                key={String(review._id) + "-" + index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.06, duration: 0.45 }}
-                className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
-              >
-                <ReviewCard review={review} />
-              </motion.div>
-            ))
-          ) : (
-            // keep layout consistent with invisible placeholders
-            Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg p-6 opacity-0 pointer-events-none" />
-            ))
-          )}
+          {reviews.length > 0 ? reviews.map((review, i) => (
+            <motion.div
+              key={review._id + "-" + i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06, duration: 0.45 }}
+              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+            >
+              <ReviewCard review={review} />
+            </motion.div>
+          )) : Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl shadow-lg p-6 opacity-0 pointer-events-none" />
+          ))}
         </div>
 
-        {showReviewModal && (
+        {showModal && (
           <AddReviewModal
             mealId={mealId}
-            onClose={() => setShowReviewModal(false)}
+            onClose={() => setShowModal(false)}
             onAdd={handleAddReview}
           />
         )}
