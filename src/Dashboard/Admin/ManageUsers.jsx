@@ -30,17 +30,16 @@ const ManageUsers = () => {
 
   // Mark as fraud
   const handleFraud = async (userId) => {
-  try {
-    const res = await axiosSecure.patch(`/users/${userId}/fraud`);
-    setUsers(users.map((u) => (u._id === userId ? res.data : u)));
+    try {
+      const res = await axiosSecure.patch(`/users/${userId}/fraud`);
+      setUsers(users.map((u) => (u._id === userId ? res.data : u)));
 
-    Swal.fire("Success", "User marked as fraud", "success");
-  } catch (err) {
-    console.error(err);
-    Swal.fire("Error", "Failed to update user status", "error");
-  }
-};
-
+      Swal.fire("Success", "User marked as fraud", "success");
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Failed to update user status", "error");
+    }
+  };
 
   if (loading) return <Loading />;
 
@@ -50,7 +49,7 @@ const ManageUsers = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Users</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center md:text-left">Manage Users</h2>
 
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
@@ -78,20 +77,14 @@ const ManageUsers = () => {
                   {user.name || "N/A"}
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  {user.email || "N/A"}
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.email || "N/A"}</td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">
-                  {user.role || "N/A"}
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">{user.role || "N/A"}</td>
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                      user.status === "fraud"
-                        ? "bg-red-100 text-red-600"
-                        : "bg-green-100 text-green-600"
+                      user.status === "fraud" ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"
                     }`}
                   >
                     {(user.status || "active").toUpperCase()}
@@ -138,9 +131,7 @@ const ManageUsers = () => {
 
             <p
               className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-2 ${
-                user.status === "fraud"
-                  ? "bg-red-100 text-red-600"
-                  : "bg-green-100 text-green-600"
+                user.status === "fraud" ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"
               }`}
             >
               {(user.status || "active").toUpperCase()}
@@ -149,7 +140,7 @@ const ManageUsers = () => {
             {user.role !== "admin" && user.status !== "fraud" ? (
               <button
                 onClick={() => handleFraud(user._id)}
-                className="px-3 py-1 rounded text-white font-medium text-sm
+                className="w-full px-3 py-2 rounded text-white font-medium
                            bg-linear-to-r from-red-400 to-red-600
                            hover:from-red-500 hover:to-red-700 transition"
               >

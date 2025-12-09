@@ -58,41 +58,69 @@ const MyFavorites = () => {
       {favorites.length === 0 ? (
         <p className="text-gray-500 text-center">You have no favorite meals yet.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
-            <thead className="bg-linear-to-r from-green-400 to-teal-500 text-white text-left">
-              <tr>
-                <th className="py-3 px-4">Meal Name</th>
-                <th className="py-3 px-4">Chef Name</th>
-                <th className="py-3 px-4">Price</th>
-                <th className="py-3 px-4">Date Added</th>
-                <th className="py-3 px-4">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {favorites.map(fav => (
-                <tr key={fav._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4 font-medium text-gray-800">{fav.mealName}</td>
-                  <td className="py-3 px-4 text-gray-600">{fav.chefName}</td>
-                  <td className="py-3 px-4 text-green-600 font-semibold">
-                    {fav.price ? `$${fav.price}` : '-'}
-                  </td>
-                  <td className="py-3 px-4 text-gray-500 text-sm">
-                    {new Date(fav.addedTime).toLocaleString()}
-                  </td>
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => handleDelete(fav._id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 shadow-sm transition-colors"
-                    >
-                      Delete
-                    </button>
-                  </td>
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
+              <thead className="bg-linear-to-r from-green-400 to-teal-500 text-white text-left">
+                <tr>
+                  <th className="py-3 px-4">Meal Name</th>
+                  <th className="py-3 px-4">Chef Name</th>
+                  <th className="py-3 px-4">Price</th>
+                  <th className="py-3 px-4">Date Added</th>
+                  <th className="py-3 px-4">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {favorites.map(fav => (
+                  <tr key={fav._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-3 px-4 font-medium text-gray-800">{fav.mealName}</td>
+                    <td className="py-3 px-4 text-gray-600">{fav.chefName}</td>
+                    <td className="py-3 px-4 text-green-600 font-semibold">
+                      {fav.price ? `$${fav.price}` : '-'}
+                    </td>
+                    <td className="py-3 px-4 text-gray-500 text-sm">
+                      {new Date(fav.addedTime).toLocaleString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <button
+                        onClick={() => handleDelete(fav._id)}
+                        className="bg-linear-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg shadow hover:from-red-600 hover:to-red-700 transition-all"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-4">
+            {favorites.map(fav => (
+              <div
+                key={fav._id}
+                className="bg-linear-to-r from-green-400 to-teal-500 rounded-2xl p-4 flex flex-col gap-2 shadow-md"
+              >
+                <p className="font-semibold text-white text-lg">{fav.mealName}</p>
+                <p className="text-white">Chef: {fav.chefName}</p>
+                <p className="text-white font-semibold">
+                  Price: {fav.price ? `$${fav.price}` : '-'}
+                </p>
+                <p className="text-white text-sm">
+                  Added: {new Date(fav.addedTime).toLocaleString()}
+                </p>
+                <button
+                  onClick={() => handleDelete(fav._id)}
+                  className="bg-linear-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg shadow hover:from-red-600 hover:to-red-700 transition-all"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

@@ -34,6 +34,7 @@ import UserProfile from "./Dashboard/User/MyProfile";
 import MyOrders from "./Dashboard/User/MyOrders";
 import MyReviews from "./Dashboard/User/MyReview";
 import MyFavorites from "./Dashboard/User/MyFavorites";
+import StripePaymentPage from "./Dashboard/User/StripePaymentPage"; 
 
 // PrivateRoute
 import PrivateRoute from "./routes/PrivateRoute";
@@ -134,6 +135,9 @@ function App() {
             <Route path="orders" element={<MyOrders />} />
             <Route path="reviews" element={<MyReviews />} />
             <Route path="favorites" element={<MyFavorites />} />
+
+            {/* Hidden Stripe Payment Page */}
+            <Route path="pay/:orderId" element={<StripePaymentPage />} />
           </Route>
 
           {/* 404 */}

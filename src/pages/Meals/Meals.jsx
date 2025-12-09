@@ -57,13 +57,12 @@ const Meals = () => {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="px-4 py-12 max-w-7xl mx-auto">
+    <div className="px-4 py-12 max-w-7xl mx-auto min-h-screen">
       {/* Page Title */}
       <motion.h1
         className="text-4xl md:text-5xl font-extrabold text-center text-gray-800 mb-8"
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.3 }}
+        animate="visible"
         variants={fadeUp}
       >
         Explore All Meals
@@ -89,16 +88,15 @@ const Meals = () => {
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.2 }}
+        animate="visible"
         variants={fadeUp}
       >
         {meals.map((meal) => (
           <motion.div
             key={meal._id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
           >
             <MealCard meal={meal} />
           </motion.div>
@@ -106,33 +104,34 @@ const Meals = () => {
       </motion.div>
 
       {/* Pagination */}
-      <motion.div
-        className="flex justify-center mt-12 gap-2"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.3 }}
-        variants={fadeUp}
-      >
-        {Array.from({ length: totalPages }, (_, i) => (
-          <motion.button
-            key={i + 1}
-            onClick={() => setPage(i + 1)}
-            className={`
-              px-4 py-2 rounded-full font-semibold shadow 
-              transition-all duration-300 
-              ${
-                page === i + 1
-                  ? "bg-emerald-500 text-white shadow-lg scale-105"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }
-            `}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {i + 1}
-          </motion.button>
-        ))}
-      </motion.div>
+      {totalPages > 1 && (
+        <motion.div
+          className="flex justify-center mt-12 gap-2 flex-wrap"
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+        >
+          {Array.from({ length: totalPages }, (_, i) => (
+            <motion.button
+              key={i + 1}
+              onClick={() => setPage(i + 1)}
+              className={`
+                px-4 py-2 rounded-full font-semibold shadow 
+                transition-all duration-300 
+                ${
+                  page === i + 1
+                    ? "bg-emerald-500 text-white shadow-lg scale-105"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }
+              `}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {i + 1}
+            </motion.button>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 };

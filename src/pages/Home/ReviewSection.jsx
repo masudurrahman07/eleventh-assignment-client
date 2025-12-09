@@ -21,21 +21,11 @@ const ReviewSection = ({ mealId, onReady }) => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
-  // Fetch reviews
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      let url = "/reviews";
-      if (mealId) {
-        // MealDetails page: fetch only reviews for this meal
-        url = `/reviews/meal/${mealId}`;
-      } else {
-        // Homepage: fetch latest 6 reviews for all meals
-        url = "/reviews?limit=6";
-      }
-
+      let url = mealId ? `/reviews/meal/${mealId}` : "/reviews?limit=6";
       const res = await axiosSecure.get(url);
-
       const formatted = (res.data || [])
         .map(r => ({
           ...r,
@@ -45,7 +35,6 @@ const ReviewSection = ({ mealId, onReady }) => {
           date: r.date ? new Date(r.date) : new Date(),
         }))
         .sort((a, b) => b.date - a.date);
-
       setReviews(formatted);
     } catch (err) {
       console.error("Fetch reviews error:", err);
@@ -56,7 +45,6 @@ const ReviewSection = ({ mealId, onReady }) => {
     }
   };
 
-  // Parent control
   useEffect(() => {
     if (typeof onReady === "function") {
       onReady({
@@ -72,7 +60,6 @@ const ReviewSection = ({ mealId, onReady }) => {
   }, [mealId]);
 
   const handleAddReview = (newReview) => {
-    // Only add to current meal's reviews
     if (!mealId || mealId === newReview.foodId) {
       setReviews(prev => [
         { ...newReview, _id: String(newReview._id), date: new Date() },
@@ -91,36 +78,43 @@ const ReviewSection = ({ mealId, onReady }) => {
       whileInView="visible"
       viewport={{ once: false, amount: 0.2 }}
       variants={fadeUp}
-      className="bg-linear-to-b from-gray-50 to-white py-20"
+      className="bg-linear-to-b from-gray-50 to-white py-12"
     >
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-          <h2 className="text-4xl font-extrabold text-gray-900">Customer Reviews</h2>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+            Customer Reviews
+          </h2>
           {user && (
             <button
               onClick={() => setShowModal(true)}
-              className="mt-4 md:mt-0 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg transition-all"
+              className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow transition"
             >
               <FaPlus /> Give Review
             </button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.length > 0 ? reviews.map((review, i) => (
-            <motion.div
-              key={review._id + "-" + i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06, duration: 0.45 }}
-              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
-            >
-              <ReviewCard review={review} />
-            </motion.div>
-          )) : Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl shadow-lg p-6 opacity-0 pointer-events-none" />
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {reviews.length > 0
+            ? reviews.map((review, i) => (
+                <motion.div
+                  key={review._id + "-" + i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05, duration: 0.4 }}
+                  className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  <ReviewCard review={review} />
+                </motion.div>
+              ))
+            : Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl shadow-lg p-6 opacity-0 pointer-events-none"
+                />
+              ))}
         </div>
 
         {showModal && (

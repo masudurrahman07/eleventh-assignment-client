@@ -61,10 +61,10 @@ const ManageRequests = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Requests</h2>
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center md:text-left">Manage Requests</h2>
 
       {/* Filter */}
-      <div className="mb-4 flex items-center gap-4">
+      <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
         <label className="font-semibold">Filter by status:</label>
         <select
           value={filter}
@@ -81,72 +81,126 @@ const ManageRequests = () => {
       {filteredRequests.length === 0 ? (
         <p className="text-gray-500 text-center">No requests to display.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User Name</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Type</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Time</th>
-                <th className="px-6 py-3 text-center text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredRequests.map(req => (
-                <tr key={req._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{req.userName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{req.userEmail}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">{req.requestType}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        req.requestStatus === 'approved'
-                          ? 'bg-green-100 text-green-700'
-                          : req.requestStatus === 'rejected'
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-yellow-100 text-yellow-700'
-                      }`}
-                    >
-                      {req.requestStatus.toUpperCase()}
-                      <span className="ml-2">
-                        {req.requestStatus === 'approved' && <FaCheckCircle className="inline" />}
-                        {req.requestStatus === 'rejected' && <FaTimesCircle className="inline" />}
-                        {req.requestStatus === 'pending' && <FaClock className="inline" />}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(req.requestTime).toLocaleString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center flex justify-center gap-2">
-                    <button
-                      onClick={() => handleAction(req._id, 'approved')}
-                      disabled={req.requestStatus !== 'pending'}
-                      className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
-                        req.requestStatus !== 'pending'
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : 'bg-green-500 hover:bg-green-600'
-                      }`}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => handleAction(req._id, 'rejected')}
-                      disabled={req.requestStatus !== 'pending'}
-                      className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
-                        req.requestStatus !== 'pending'
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : 'bg-red-500 hover:bg-red-600'
-                      }`}
-                    >
-                      Reject
-                    </button>
-                  </td>
+        <>
+          {/* Table for md+ screens */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User Name</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Type</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Request Time</th>
+                  <th className="px-6 py-3 text-center text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredRequests.map(req => (
+                  <tr key={req._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{req.userName}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{req.userEmail}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">{req.requestType}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          req.requestStatus === 'approved'
+                            ? 'bg-green-100 text-green-700'
+                            : req.requestStatus === 'rejected'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        {req.requestStatus.toUpperCase()}
+                        <span className="ml-2">
+                          {req.requestStatus === 'approved' && <FaCheckCircle className="inline" />}
+                          {req.requestStatus === 'rejected' && <FaTimesCircle className="inline" />}
+                          {req.requestStatus === 'pending' && <FaClock className="inline" />}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(req.requestTime).toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center flex justify-center gap-2">
+                      <button
+                        onClick={() => handleAction(req._id, 'approved')}
+                        disabled={req.requestStatus !== 'pending'}
+                        className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
+                          req.requestStatus !== 'pending'
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-green-500 hover:bg-green-600'
+                        }`}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => handleAction(req._id, 'rejected')}
+                        disabled={req.requestStatus !== 'pending'}
+                        className={`px-3 py-1 rounded text-white text-sm font-medium transition ${
+                          req.requestStatus !== 'pending'
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-red-500 hover:bg-red-600'
+                        }`}
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden flex flex-col gap-4">
+            {filteredRequests.map(req => (
+              <div key={req._id} className="bg-white shadow-md rounded-lg p-4 space-y-2">
+                <p className="font-semibold text-gray-800">{req.userName}</p>
+                <p className="text-gray-600 text-sm">{req.userEmail}</p>
+                <p className="capitalize text-gray-600 text-sm">{req.requestType}</p>
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                    req.requestStatus === 'approved'
+                      ? 'bg-green-100 text-green-700'
+                      : req.requestStatus === 'rejected'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}
+                >
+                  {req.requestStatus.toUpperCase()}
+                  <span className="ml-2">
+                    {req.requestStatus === 'approved' && <FaCheckCircle className="inline" />}
+                    {req.requestStatus === 'rejected' && <FaTimesCircle className="inline" />}
+                    {req.requestStatus === 'pending' && <FaClock className="inline" />}
+                  </span>
+                </span>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={() => handleAction(req._id, 'approved')}
+                    disabled={req.requestStatus !== 'pending'}
+                    className={`flex-1 px-3 py-2 rounded text-white font-medium transition ${
+                      req.requestStatus !== 'pending'
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-green-500 hover:bg-green-600'
+                    }`}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleAction(req._id, 'rejected')}
+                    disabled={req.requestStatus !== 'pending'}
+                    className={`flex-1 px-3 py-2 rounded text-white font-medium transition ${
+                      req.requestStatus !== 'pending'
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-red-500 hover:bg-red-600'
+                    }`}
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
