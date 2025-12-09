@@ -22,17 +22,25 @@ const ReviewSection = ({ mealId, onReady }) => {
   const [showModal, setShowModal] = useState(false);
 
   // Fetch reviews
-  async function fetchReviews() {
+  const fetchReviews = async () => {
     try {
       setLoading(true);
-      const url = mealId ? `/reviews/meal/${mealId}` : "/reviews";
+      let url = "/reviews";
+      if (mealId) {
+        // MealDetails page: fetch only reviews for this meal
+        url = `/reviews/meal/${mealId}`;
+      } else {
+        // Homepage: fetch latest 6 reviews for all meals
+        url = "/reviews?limit=6";
+      }
+
       const res = await axiosSecure.get(url);
 
       const formatted = (res.data || [])
         .map(r => ({
           ...r,
           _id: String(r._id),
-          reviewerName: r.reviewerName || "Anonymous",
+          reviewerName: r.reviewerName || r.name || "Anonymous",
           reviewerImage: r.reviewerImage || "https://i.ibb.co/0s3pdnc/default-user.png",
           date: r.date ? new Date(r.date) : new Date(),
         }))
@@ -46,7 +54,7 @@ const ReviewSection = ({ mealId, onReady }) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   // Parent control
   useEffect(() => {
@@ -64,7 +72,13 @@ const ReviewSection = ({ mealId, onReady }) => {
   }, [mealId]);
 
   const handleAddReview = (newReview) => {
-    setReviews(prev => [{ ...newReview, _id: String(newReview._id), date: new Date() }, ...prev]);
+    // Only add to current meal's reviews
+    if (!mealId || mealId === newReview.foodId) {
+      setReviews(prev => [
+        { ...newReview, _id: String(newReview._id), date: new Date() },
+        ...prev
+      ]);
+    }
     Swal.fire("Success", "Review submitted!", "success");
     setShowModal(false);
   };
