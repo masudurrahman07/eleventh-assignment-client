@@ -34,7 +34,8 @@ import UserProfile from "./Dashboard/User/MyProfile";
 import MyOrders from "./Dashboard/User/MyOrders";
 import MyReviews from "./Dashboard/User/MyReview";
 import MyFavorites from "./Dashboard/User/MyFavorites";
-import StripePaymentPage from "./Dashboard/User/StripePaymentPage"; 
+import StripePaymentPage from "./Dashboard/User/StripePaymentPage";
+import PaymentSuccess from "./Dashboard/User/PaymentSuccess";
 
 // PrivateRoute
 import PrivateRoute from "./routes/PrivateRoute";
@@ -139,6 +140,16 @@ function App() {
             {/* Hidden Stripe Payment Page */}
             <Route path="pay/:orderId" element={<StripePaymentPage />} />
           </Route>
+
+          {/* STANDALONE PAYMENT SUCCESS PAGE */}
+          <Route
+            path="/dashboard/user/payment-success"
+            element={
+              <PrivateRoute allowedRoles={["user"]}>
+                <PaymentSuccess />
+              </PrivateRoute>
+            }
+          />
 
           {/* 404 */}
           <Route path="*" element={<ErrorPage />} />

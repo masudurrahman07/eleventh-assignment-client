@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
       <h2 className="text-3xl font-bold">Payment Successful!</h2>
       <p className="text-gray-600">Thank you for your order. Your payment has been received.</p>
       <button
-        onClick={() => navigate('/dashboard/my-orders')}
+        onClick={() => navigate('/dashboard/user/orders')}
         className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition"
       >
         Back to My Orders

@@ -28,7 +28,7 @@ const MyMeals = () => {
   useEffect(() => {
     const fetchMeals = async () => {
       try {
-        const res = await axiosSecure.get(`/meals/chef/${user.email}`);
+        const res = await axiosSecure.get("/meals/chef"); // ✅ fixed
         setMeals(res.data);
       } catch (err) {
         Swal.fire("Error", "Failed to fetch meals", "error");
@@ -37,7 +37,7 @@ const MyMeals = () => {
       }
     };
     fetchMeals();
-  }, [axiosSecure, user.email]);
+  }, [axiosSecure]);
 
   // Delete Meal
   const handleDelete = async (mealId) => {

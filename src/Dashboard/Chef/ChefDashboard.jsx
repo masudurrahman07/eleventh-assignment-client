@@ -22,31 +22,31 @@ const ChefDashboard = () => {
   const [chefData, setChefData] = useState(null);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        if (!user?.email) return;
-        const mealsRes = await axiosSecure.get(`/meals/chef/${user.email}`);
-        const ordersRes = await axiosSecure.get(`/orders/chef/${user.email}`);
-        setChefData({
-          name: user.name || user.displayName || "Chef",
-          totalMeals: Array.isArray(mealsRes.data) ? mealsRes.data.length : 0,
-          orderRequests: Array.isArray(ordersRes.data) ? ordersRes.data.length : 0,
-        });
-      } catch (err) {
-        console.error("Chef dashboard fetch error:", err);
-        setChefData({
-          name: user?.name || "Chef",
-          totalMeals: 0,
-          orderRequests: 0,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
-  }, [user]);
+useEffect(() => {
+  const fetch = async () => {
+    try {
+      if (!user?.email) return;
+      // ✅ call correct backend route
+      const mealsRes = await axiosSecure.get(`/meals/chef`);
+      const ordersRes = await axiosSecure.get(`/orders/chef`);
+      setChefData({
+        name: user.name || user.displayName || "Chef",
+        totalMeals: Array.isArray(mealsRes.data) ? mealsRes.data.length : 0,
+        orderRequests: Array.isArray(ordersRes.data) ? ordersRes.data.length : 0,
+      });
+    } catch (err) {
+      console.error("Chef dashboard fetch error:", err);
+      setChefData({
+        name: user?.name || "Chef",
+        totalMeals: 0,
+        orderRequests: 0,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetch();
+}, [user]);
 
   if (loading) return <Loading />;
   if (!chefData)

@@ -22,8 +22,8 @@ const OrderRequests = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axiosSecure.get(`/orders/chef/${user.email}`);
-        setOrders(res.data);
+       const res = await axiosSecure.get('/orders/chef'); // no email param
+setOrders(res.data);
       } catch (err) {
         Swal.fire("Error", "Failed to fetch orders", "error");
       } finally {

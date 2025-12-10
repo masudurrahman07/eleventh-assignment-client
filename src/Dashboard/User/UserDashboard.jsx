@@ -1,18 +1,13 @@
 // src/pages/Dashboard/User/UserDashboard.jsx
-import React, { useState } from 'react';
-import MyProfile from '../User/MyProfile';
-import MyOrders from '../User/MyOrders';
-import MyReviews from '../User/MyReview';
-import MyFavorites from '../User/MyFavorites';
+import React from 'react';
+import { Outlet, NavLink } from 'react-router-dom';
 
 const UserDashboard = () => {
-  const [activeTab, setActiveTab] = useState('profile'); // default tab
-
   const tabs = [
-    { id: 'profile', label: 'My Profile', component: <MyProfile /> },
-    { id: 'orders', label: 'My Orders', component: <MyOrders /> },
-    { id: 'reviews', label: 'My Reviews', component: <MyReviews /> },
-    { id: 'favorites', label: 'Favorite Meals', component: <MyFavorites /> },
+    { id: 'profile', label: 'My Profile', path: 'profile' },
+    { id: 'orders', label: 'My Orders', path: 'orders' },
+    { id: 'reviews', label: 'My Reviews', path: 'reviews' },
+    { id: 'favorites', label: 'Favorite Meals', path: 'favorites' },
   ];
 
   return (
@@ -22,21 +17,23 @@ const UserDashboard = () => {
       {/* Tabs */}
       <div className="flex flex-wrap mb-6 border-b">
         {tabs.map(tab => (
-          <button
+          <NavLink
             key={tab.id}
-            className={`mr-4 pb-2 border-b-2 ${
-              activeTab === tab.id ? 'border-blue-500 text-blue-600 font-semibold' : 'border-transparent text-gray-600'
-            }`}
-            onClick={() => setActiveTab(tab.id)}
+            to={tab.path}
+            className={({ isActive }) =>
+              `mr-4 pb-2 border-b-2 ${
+                isActive ? 'border-blue-500 text-blue-600 font-semibold' : 'border-transparent text-gray-600'
+              }`
+            }
           >
             {tab.label}
-          </button>
+          </NavLink>
         ))}
       </div>
 
-      {/* Active Tab Content */}
+      {/* Render nested routes */}
       <div className="space-y-6">
-        {tabs.find(tab => tab.id === activeTab)?.component}
+        <Outlet />
       </div>
     </div>
   );
