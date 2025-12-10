@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true); // start as true
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -16,59 +16,50 @@ const AuthProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
     }
-
-    setLoading(false); // finish loading after restoring
+    setLoading(false); 
   }, []);
 
   const registerUser = async (name, email, password, profileImage, address) => {
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:3000/auth/register', {
-        name, email, password, profileImage, address
-      });
+        name, email, password, profileImage, address});
       const { user, token } = res.data;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);
       setUser(user);
       setToken(token);
       setLoading(false);
-      return user;
-    } catch (err) {
-      setLoading(false);
-      throw new Error(err.response?.data?.message || 'Registration failed');
-    }
-  };
+      return user;} 
+      catch (err) {setLoading(false);
+      throw new Error(err.response?.data?.message || 'Registration failed');}};
 
   const loginUser = async (email, password) => {
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+
       const { user, token } = res.data;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);
       setUser(user);
       setToken(token);
       setLoading(false);
-      return user;
-    } catch (err) {
-      setLoading(false);
-      throw new Error(err.response?.data?.message || 'Invalid credentials');
-    }
-  };
+      return user;} catch (err) { setLoading(false);
+      throw new Error(err.response?.data?.message || 'Invalid credentials');}};
+
+
 
   const logout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-    setToken(null);
-  };
+    setToken(null);};
 
   return (
     <AuthContext.Provider value={{ user, token, loading, registerUser, loginUser, logout }}>
       {children}
-    </AuthContext.Provider>
-  );
-};
+    </AuthContext.Provider>);};
 
 export const useAuth = () => useContext(AuthContext);
 export default AuthProvider;

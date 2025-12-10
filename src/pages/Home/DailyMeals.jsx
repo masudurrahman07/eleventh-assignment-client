@@ -9,6 +9,7 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
+
 const DailyMeals = () => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,13 +18,12 @@ const DailyMeals = () => {
     const fetchMeals = async () => {
       try {
         const res = await axios.get('http://localhost:3000/meals?limit=6');
-        setMeals(res.data.meals || []);
-      } catch (err) {
+        setMeals(res.data.meals || []);} 
+        catch (err) {
         console.error('Error fetching meals:', err);
-        setMeals([]);
-      } finally {
-        setLoading(false);
-      }
+        setMeals([]);} 
+        finally {
+        setLoading(false);}
     };
 
     fetchMeals();
@@ -31,8 +31,11 @@ const DailyMeals = () => {
 
   if (loading) return <Loading />;
 
+
+
   if (meals.length === 0)
     return <p className="text-center text-gray-500">No meals available today.</p>;
+
 
   return (
     <motion.div
@@ -40,16 +43,15 @@ const DailyMeals = () => {
       whileInView="visible"
       viewport={{ once: false, amount: 0.2 }}
       variants={fadeUp}
-      className="px-4 py-8"
-    >
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-800 mb-8">
-        Daily Meals
-      </h2>
+      className="px-4 py-8">
+
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-800 mb-8"> Daily Meals</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
         {meals.map(meal => (
           <MealCard key={meal._id} meal={meal} />
-        ))}
+          ))}
       </div>
     </motion.div>
   );

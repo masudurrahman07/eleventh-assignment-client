@@ -1,4 +1,4 @@
-// src/pages/Meals/Meals.jsx
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MealCard from "../../components/MealCard";
@@ -7,15 +7,16 @@ import { motion } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },};
 
 const Meals = () => {
   const [meals, setMeals] = useState([]);
   const [total, setTotal] = useState(0);
+
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState("asc"); // asc or desc
+
+  const [sortOrder, setSortOrder] = useState("asc"); 
   const limit = 10;
 
   useEffect(() => {
@@ -23,52 +24,49 @@ const Meals = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:3000/meals?page=${page}&limit=${limit}`
-        );
+          `http://localhost:3000/meals?page=${page}&limit=${limit}`);
 
         let fetchedMeals = res.data.meals || [];
         fetchedMeals.sort((a, b) =>
-          sortOrder === "asc" ? a.price - b.price : b.price - a.price
-        );
+          sortOrder === "asc" ? a.price - b.price : b.price - a.price );
 
         setMeals(fetchedMeals);
-        setTotal(res.data.total || 0);
-      } catch (err) {
+        setTotal(res.data.total || 0);}
+         catch (err) {
         console.error("Error fetching meals:", err);
         setMeals([]);
-        setTotal(0);
-      } finally {
-        setLoading(false);
-      }
+        setTotal(0);}
+         finally {
+        setLoading(false);}
     };
 
     fetchMeals();
   }, [page, sortOrder]);
 
+
   if (loading) return <Loading />;
 
+
   if (!meals.length)
+
     return (
-      <p className="text-center text-gray-500 text-lg mt-16">
-        No meals available.
-      </p>
+      <p className="text-center text-gray-500 text-lg mt-16"> No meals available.</p>
     );
 
   const totalPages = Math.ceil(total / limit);
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto min-h-screen">
-      {/* Page Title */}
+      
       <motion.h1
         className="text-4xl md:text-5xl font-extrabold text-center text-gray-800 mb-8"
         initial="hidden"
         animate="visible"
-        variants={fadeUp}
-      >
+        variants={fadeUp}>
         Explore All Meals
       </motion.h1>
 
-      {/* Sort Select */}
+      
       <div className="flex justify-center mb-8">
         <select
           value={sortOrder}
@@ -76,41 +74,38 @@ const Meals = () => {
           className="
             px-4 py-2 rounded-lg border border-gray-300
             shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500
-            font-medium text-gray-700 transition-all duration-300
-          "
-        >
+            font-medium text-gray-700 transition-all duration-300 ">
           <option value="asc">Price: Low → High</option>
           <option value="desc">Price: High → Low</option>
         </select>
       </div>
 
-      {/* Meals Grid */}
+    
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
         initial="hidden"
         animate="visible"
-        variants={fadeUp}
-      >
+        variants={fadeUp}>
+
         {meals.map((meal) => (
           <motion.div
             key={meal._id}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-          >
+            transition={{ duration: 0.4 }}>
             <MealCard meal={meal} />
           </motion.div>
         ))}
       </motion.div>
 
-      {/* Pagination */}
+      
       {totalPages > 1 && (
         <motion.div
           className="flex justify-center mt-12 gap-2 flex-wrap"
           initial="hidden"
           animate="visible"
-          variants={fadeUp}
-        >
+          variants={fadeUp}>
+
           {Array.from({ length: totalPages }, (_, i) => (
             <motion.button
               key={i + 1}
@@ -121,17 +116,12 @@ const Meals = () => {
                 ${
                   page === i + 1
                     ? "bg-emerald-500 text-white shadow-lg scale-105"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                }
-              `}
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"}`}
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+              whileTap={{ scale: 0.95 }}>
               {i + 1}
-            </motion.button>
-          ))}
-        </motion.div>
-      )}
+            </motion.button>))}
+        </motion.div> )}
     </div>
   );
 };
