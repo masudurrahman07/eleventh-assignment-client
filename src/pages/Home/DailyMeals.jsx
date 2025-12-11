@@ -17,7 +17,7 @@ const DailyMeals = () => {
   useEffect(() => {
     const fetchMeals = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/meals?limit=6');
+        const res = await axios.get('https://local-chef-bazaar-server-mocha.vercel.app/meals?limit=6');
         setMeals(res.data.meals || []);} 
         catch (err) {
         console.error('Error fetching meals:', err);

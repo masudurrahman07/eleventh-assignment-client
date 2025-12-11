@@ -25,7 +25,7 @@ const AddReviewModal = ({ mealId, onClose, onAdd }) => {
 
   
       const res = await axios.post(
-        "http://localhost:3000/reviews",
+        "https://local-chef-bazaar-server-mocha.vercel.app/reviews",
         newReview,
         {
           headers: {

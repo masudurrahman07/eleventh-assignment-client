@@ -6,7 +6,7 @@ const useAxiosSecure = () => {
   const axiosSecure = useMemo(() => {
 
     const instance = axios.create({
-      baseURL: 'http://localhost:3000',
+      baseURL: 'https://local-chef-bazaar-server-mocha.vercel.app',
       headers: { 'Content-Type': 'application/json' },});
 
     instance.interceptors.request.use(

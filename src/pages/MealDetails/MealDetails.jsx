@@ -24,7 +24,7 @@ const MealDetails = () => {
   useEffect(() => {
     const fetchMeal = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/meals/${id}`);
+        const res = await axios.get(`https://local-chef-bazaar-server-mocha.vercel.app/meals/${id}`);
         setMeal(res.data);}
          catch (err) {
         console.error('Failed to load meal:', err);
@@ -49,7 +49,7 @@ const MealDetails = () => {
 
     try {
       await axios.post(
-        'http://localhost:3000/favorites',
+        'https://local-chef-bazaar-server-mocha.vercel.app/favorites',
         { mealId: meal._id },
         { headers: { Authorization: `Bearer ${token}` } });
 

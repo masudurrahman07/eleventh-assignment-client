@@ -48,7 +48,7 @@ const OrderPage = () => {
     if (!meal) {
       setLoading(true);
       axios
-        .get(`http://localhost:3000/meals/${id}`, {
+        .get(`https://local-chef-bazaar-server-mocha.vercel.app/meals/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setMeal(res.data))
@@ -76,7 +76,7 @@ const OrderPage = () => {
 
     try {
       await axios.post(
-        "http://localhost:3000/orders",
+        "https://local-chef-bazaar-server-mocha.vercel.app/orders",
         {
           foodId: meal._id,
           mealName: meal.foodName,

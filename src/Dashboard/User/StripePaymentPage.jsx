@@ -35,7 +35,7 @@ const CheckoutForm = ({ order, token }) => {
 
 
     try {
-      const res = await fetch("http://localhost:3000/create-payment-intent", {
+      const res = await fetch("https://local-chef-bazaar-server-mocha.vercel.app/create-payment-intent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const CheckoutForm = ({ order, token }) => {
 
 
       if (paymentIntent.status === "succeeded") {
-        await fetch(`http://localhost:3000/orders/${order._id}/pay`, {
+        await fetch(`https://local-chef-bazaar-server-mocha.vercel.app/orders/${order._id}/pay`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

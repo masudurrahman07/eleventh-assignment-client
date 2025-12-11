@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
   const registerUser = async (name, email, password, profileImage, address) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/auth/register', {
+      const res = await axios.post('https://local-chef-bazaar-server-mocha.vercel.app/auth/register', {
         name, email, password, profileImage, address});
       const { user, token } = res.data;
       localStorage.setItem('user', JSON.stringify(user));
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }) => {
   const loginUser = async (email, password) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+      const res = await axios.post('https://local-chef-bazaar-server-mocha.vercel.app/auth/login', { email, password });
 
       const { user, token } = res.data;
       localStorage.setItem('user', JSON.stringify(user));

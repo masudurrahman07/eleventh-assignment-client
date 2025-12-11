@@ -24,7 +24,7 @@ const Meals = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:3000/meals?page=${page}&limit=${limit}`);
+          `https://local-chef-bazaar-server-mocha.vercel.app/meals?page=${page}&limit=${limit}`);
 
         let fetchedMeals = res.data.meals || [];
         fetchedMeals.sort((a, b) =>
