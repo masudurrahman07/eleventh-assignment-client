@@ -1,16 +1,63 @@
-# React + Vite
+# LocalChefBazaar – Role-Based Food Marketplace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗 Live Website
+https://local-chef-bazaar01.netlify.app/
 
-Currently, two official plugins are available:
+## 📌 Project Overview
+LocalChefBazaar is a  food marketplace platform that connects local chefs with customers. The system is built with role-based user experiences where chefs can create and manage meals, users can browse and order food, and admins oversee and control platform operations. Secure authentication and CRUD functionality ensure reliable data handling and user management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 👥 User Roles & Features
 
-## React Compiler
+### 👨‍🍳 Chef
+- Create, update, and delete meals
+- Manage listed food items
+- View customer orders
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 👤 User
+- Browse available meals
+- Place food orders
+- View order history
+- Adds favourite meal
 
-## Expanding the ESLint configuration
+### 🛡️ Admin
+- Manage users and chefs
+- Control platform data
+- Monitor meals and orders
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Core Features
+- Role-based authentication and authorization
+- Secure JWT-based login system
+- Full CRUD operations
+- Meal creation and order management
+- Protected routes for different user roles
+- Responsive and intuitive UI
+
+## 🛠️ Technologies Used
+
+### Frontend
+- React
+- JavaScript
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB
+
+### Authentication & Security
+- JWT (JSON Web Tokens)
+- Protected API routes
+
+## 📦 Major Dependencies
+- express
+- mongodb
+- jsonwebtoken
+- cors
+- dotenv
+
+## How to Run Locally
+1. Clone the repository
+2. Run `npm install`
+3. Run `npm start`
