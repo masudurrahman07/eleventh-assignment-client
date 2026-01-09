@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useTheme } from "./contexts/ThemeContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ErrorPage from "./components/ErrorPage";
@@ -28,6 +29,11 @@ import MyReviews from "./Dashboard/User/MyReview";
 import MyFavorites from "./Dashboard/User/MyFavorites";
 import StripePaymentPage from "./Dashboard/User/StripePaymentPage";
 import PaymentSuccess from "./Dashboard/User/PaymentSuccess";
+import Features from "./pages/Features";
+import ContactUs from "./pages/ContactUs";
+import Cookies from "./pages/Cookies";
+import Pricing from "./pages/Pricing";
+import Support from "./pages/Support";
 import PrivateRoute from "./routes/PrivateRoute";
 import useAuth from "./auth/useAuth";
 
@@ -41,22 +47,31 @@ const DashboardRedirect = () => {
 };
 
 function App() {
+  const { theme } = useTheme();
+  
   return (
-    <div className="flex flex-col min-h-screen">
+    <div 
+      className="flex flex-col min-h-screen transition-colors duration-300"
+      style={{
+        backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb',
+        color: theme === 'dark' ? '#f9fafb' : '#111827'
+      }}>
       <Navbar />
 
-      <main className="grow">
+      <main 
+        className="grow transition-colors duration-300"
+        style={{
+          backgroundColor: theme === 'dark' ? '#111827' : '#ffffff'
+        }}>
 
         <Routes>
           
           <Route path="/" element={<Home />} />
           <Route path="/meals" element={<Meals />} />
-          <Route
-            path="/meals/:id"
-            element={
-              <PrivateRoute>
-                <MealDetails />
-              </PrivateRoute>}/>
+          <Route path="/features" element={<Features />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/meals/:id" element={<MealDetails />} />
 
           <Route
             path="/order/:id"
@@ -67,6 +82,22 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+        
+          <Route
+            path="/pricing"
+            element={
+              <PrivateRoute>
+                <Pricing />
+              </PrivateRoute>
+            }/>
+          <Route
+            path="/support"
+            element={
+              <PrivateRoute>
+                <Support />
+              </PrivateRoute>
+            }/>
 
       
           <Route

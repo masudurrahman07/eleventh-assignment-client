@@ -1,87 +1,84 @@
-
 import React from "react";
-import { motion } from "framer-motion";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
-};
+import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Footer = () => {
+  const { theme } = useTheme();
+
   return (
-    <motion.footer
-      className="
-        bg-linear-to-r from-emerald-400 to-teal-500 
-        shadow-lg text-white mt-16 
-        transition-all duration-300 
-        hover:from-teal-400 hover:to-emerald-500"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, amount: 0.2 }}
-      variants={fadeUp}>
-      <div className="max-w-7xl mx-auto py-12 px-4  grid md:grid-cols-3 gap-10">
+    <footer
+      className="shadow-lg text-white transition-all duration-300"
+      style={{
+        background: theme === 'dark' 
+          ? 'linear-gradient(to right, #047857, #0d9488)' 
+          : 'linear-gradient(to right, #10b981, #14b8a6)' }}>
 
-        
-        <motion.div
-          variants={fadeUp}
-          className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
-          <p className="text-white/90">LocalChefBazaar</p>
-          <p className="text-white/90">Email: support@localchefbazaar.com</p>
-          <p className="text-white/90">Phone: +880 123 456 789</p>
-        </motion.div>
+      <div className="max-w-7xl mx-auto py-12 px-4 grid md:grid-cols-3 gap-10">
+        <div className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg border border-white/20">
+          <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
+          <div className="space-y-2">
+            <Link 
+              to="/contact" 
+              className="block text-white/90 hover:text-yellow-300 transition-colors duration-300">
+              Contact Us
+            </Link>
+            <Link 
+              to="/cookies" 
+              className="block text-white/90 hover:text-yellow-300 transition-colors duration-300">
+              Cookie Policy</Link>
+          </div>
+        </div>
 
-        
-        <motion.div
-          variants={fadeUp}
-          className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg">
+        <div className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg border border-white/20">
           <h2 className="text-2xl font-semibold mb-4">Follow Us</h2>
           <div className="flex space-x-6 text-3xl">
+
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/mdmasudur.rahman.1800721"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-yellow-300 transition-all">
+              className="hover:text-yellow-300 transition-all duration-300 hover:scale-110">
               <FaFacebook />
             </a>
 
             <a
-              href="https://twitter.com"
+              href="https://github.com/masudurrahman07/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-yellow-300 transition-all">
-              <FaTwitter />
+              className="hover:text-yellow-300 transition-all duration-300 hover:scale-110">
+              <FaGithub />
             </a>
 
             <a
-              href="https://instagram.com"
+              href="https://www.linkedin.com/in/masudurrahman07/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-yellow-300 transition-all">
-              <FaInstagram />
+              className="hover:text-yellow-300 transition-all duration-300 hover:scale-110">
+              <FaLinkedin />
             </a>
           </div>
-        </motion.div>
+        </div>
 
-        
-        <motion.div
-          variants={fadeUp}
-          className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg">
+        <div className="backdrop-blur-sm bg-white/10 p-6 rounded-xl shadow-lg border border-white/20">
           <h2 className="text-2xl font-semibold mb-4">Working Hours</h2>
           <p className="text-white/90">Mon - Fri: 8:00 AM - 8:00 PM</p>
           <p className="text-white/90">Saturday: 9:00 AM - 5:00 PM</p>
           <p className="text-white/90">Sunday: Closed</p>
-        </motion.div>
+        </div>
       </div>
 
-    
-      <div className="bg-black/20 text-center py-4 mt-6 backdrop-blur-sm">
+      <div 
+        className="text-center py-4 mt-6 backdrop-blur-sm border-t border-white/20"
+        style={{
+          backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.2)'
+        }}>
         <p className="text-white/90 text-sm">
           © {new Date().getFullYear()} LocalChefBazaar. All rights reserved.
         </p>
       </div>
-    </motion.footer>);
+    </footer>
+  );
 };
 
 export default Footer;

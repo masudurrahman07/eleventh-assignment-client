@@ -1,17 +1,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserTie, FaStar } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 
 const MealCard = ({ meal }) => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const handleSeeDetails = () => {
-    let token = localStorage.getItem("token");
-    if (!token) navigate("/login");
-    else navigate(`/meals/${meal._id}`);};
+    navigate(`/meals/${meal._id}`);
+  };
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg border border-teal-200 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+    <div 
+      className="rounded-xl shadow-lg border hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 overflow-hidden backdrop-blur-lg"
+      style={{
+        backgroundColor: theme === 'dark' ? 'rgba(31, 41, 55, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+        borderColor: theme === 'dark' ? '#374151' : '#14b8a6'
+      }}>
       <div className="relative">
         <img
           src={meal.foodImage}
@@ -24,19 +30,28 @@ const MealCard = ({ meal }) => {
       </div>
 
       <div className="p-4 space-y-2">
-        <div className="flex items-center text-gray-700  gap-2">
+        <div 
+          className="flex items-center gap-2"
+          style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
           <FaUserTie className="text-emerald-600" />
           <span className="font-semibold">{meal.chefName}</span>
         </div>
 
-        <span className="inline-block px-3 py-1 text-xs bg-linear-to-r from-emerald-400 to-teal-500 text-white rounded-full shadow">ID: {meal.chefId}</span>
+        <span className="inline-block px-3 py-1 text-xs bg-linear-to-r from-emerald-400 to-teal-500 text-white rounded-full shadow">
+          ID: {meal.chefId}
+        </span>
 
-        
-        <p className="text-sm font-medium text-gray-600"> Delivery Area: <span className="text-emerald-600 font-semibold">All over Dhaka</span> </p>
+        <p 
+          className="text-sm font-medium"
+          style={{ color: theme === 'dark' ? '#9ca3af' : '#4b5563' }}>
+          Delivery Area: <span className="text-emerald-600 font-semibold">All over Dhaka</span>
+        </p>
 
         <div className="flex justify-between items-center mt-1">
           <p className="text-lg font-bold text-emerald-600">${meal.price}</p>
-          <p className="flex items-center gap-1 text-yellow-500 font-medium"> <FaStar /> {meal.rating} </p>
+          <p className="flex items-center gap-1 text-yellow-500 font-medium">
+            <FaStar /> {meal.rating}
+          </p>
         </div>
 
         <button

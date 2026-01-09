@@ -2,17 +2,22 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
+import { useTheme } from "../../contexts/ThemeContext";
 import useAuth from "../../auth/useAuth";
-
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
 
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div 
+      className="min-h-screen flex flex-col md:flex-row transition-colors duration-300"
+      style={{
+        backgroundColor: theme === 'dark' ? '#111827' : '#ffffff'
+      }}>
       
       <div className="flex items-center justify-between bg-linear-to-r from-emerald-400 to-teal-500 text-white p-4 md:hidden">
         <h1 className="text-lg font-bold">Admin Dashboard</h1>
@@ -21,7 +26,8 @@ const AdminDashboard = () => {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="focus:outline-none">
 
-          {sidebarOpen ? <HiX size={28} /> : <HiMenu size={28} />}</button>
+          {sidebarOpen ? <HiX size={28} /> : <HiMenu size={28} />}
+        </button>
       </div>
 
       
@@ -55,11 +61,13 @@ const AdminDashboard = () => {
               className={({ isActive }) =>
                 `block px-4 py-2 rounded-lg font-medium transition ${
                   isActive
-                    ? "bg-white text-teal-700"
-                    : "hover:bg-white hover:text-teal-700 text-white"}`}
+                    ? "bg-white text-teal-700 font-semibold"
+                    : "hover:bg-white hover:text-teal-700 text-white"
+                }`}
               onClick={() => setSidebarOpen(false)} >
               {item.label}
-            </NavLink>))}
+            </NavLink>
+          ))}
         </nav>
       </aside>
 
@@ -70,7 +78,12 @@ const AdminDashboard = () => {
           onClick={() => setSidebarOpen(false)}/>)}
 
       
-      <main className="flex-1 p-8 bg-gray-50 md:ml-64">
+      <main 
+        className="flex-1 p-8 md:ml-64 transition-colors duration-300"
+        style={{
+          backgroundColor: theme === 'dark' ? '#1f2937' : '#f9fafb'
+        }}
+      >
         <Outlet />
       </main>
     </div>

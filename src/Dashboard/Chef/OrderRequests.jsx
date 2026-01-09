@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../auth/useAuth";
+import { useTheme } from "../../contexts/ThemeContext";
 import Loading from "../../components/Loading";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
@@ -14,6 +15,7 @@ const statusColors = {
 
 const OrderRequests = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const axiosSecure = useAxiosSecure();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,87 +46,108 @@ const OrderRequests = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-10 text-center"> Order Requests</h1>
+    <div 
+      className="min-h-screen px-4 py-8"
+      style={{
+        backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb',
+        color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
+      }} >
+      <div className="max-w-7xl mx-auto">
+        <h1 
+          className="text-4xl font-bold mb-10 text-center"
+          style={{ color: theme === 'dark' ? '#f3f4f6' : '#1f2937' }}>
+          Order Requests
+        </h1>
 
-      {orders.length === 0 ? (
-        <p className="text-center text-gray-500 text-lg">No orders yet.</p>
-      ) : (
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        {orders.length === 0 ? (
+          <p 
+            className="text-center text-lg"
+            style={{ color: theme === 'dark' ? '#9ca3af' : '#6b7280' }}>
+            No orders yet.
+          </p>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {orders.map((order) => {
+              const status = order.orderStatus;
+              const isPending = status === "pending";
+              const isAccepted = status === "accepted";
 
-          {orders.map((order) => {
-            const status = order.orderStatus;
-            const isPending = status === "pending";
-            const isAccepted = status === "accepted";
-
-            return (
-              <motion.div
-                key={order._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.03 }}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 flex flex-col">
-
-            
-                <div className="px-6 py-4 bg-linear-to-r from-emerald-400 to-teal-500 text-white">
-                  <h3 className="text-xl font-bold">{order.mealName}</h3>
-
-                  <span
-                    className={`mt-1 inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[status]}`}>
-                    {status.toUpperCase()}
-                  </span>
-                </div>
-
-                <div className="p-6 flex-1 flex flex-col justify-between">
-              
-                  <div className="space-y-2 text-gray-700">
-
-                    <p><strong>Price:</strong> ${order.price}</p>
-
-                    <p> <strong>Quantity:</strong> {order.quantity}</p>
-
-                    <p> <strong>User Email:</strong> {order.userEmail} </p>
-
-                    <p> <strong>Address:</strong> {order.userAddress} </p>
-
-                    <p> <strong>Payment:</strong> {order.paymentStatus} </p>
-
-                    <p> <strong>Order Time:</strong>{" "}
-                      {new Date(order.orderTime).toLocaleString()}</p>
+              return (
+                <motion.div
+                  key={order._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.03 }}
+                  className="rounded-2xl shadow-lg overflow-hidden border flex flex-col"
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+                    borderColor: theme === 'dark' ? '#374151' : '#e5e7eb'
+                  }}>
+               
+                  <div className="px-6 py-4 text-white" style={{ background: 'linear-gradient(to right, #10b981, #059669)' }}>
+                    <h3 className="text-xl font-bold">{order.mealName}</h3>
+                    <span
+                      className={`mt-1 inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[status]}`}>
+                      {status.toUpperCase()}
+                    </span>
                   </div>
 
-                  
-                  <div className="flex gap-2 mt-6">
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+           
+                    <div 
+                      className="space-y-2"
+                      style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                      <p><strong>Price:</strong> ${order.price}</p>
+                      <p><strong>Quantity:</strong> {order.quantity}</p>
+                      <p><strong>User Email:</strong> {order.userEmail}</p>
+                      <p><strong>Address:</strong> {order.userAddress}</p>
+                      <p><strong>Payment:</strong> {order.paymentStatus}</p>
+                      <p>
+                        <strong>Order Time:</strong>{" "}
+                        {new Date(order.orderTime).toLocaleString()}
+                      </p>
+                    </div>
 
-                    <button
-                      onClick={() => updateStatus(order._id, "cancelled")}
-                      disabled={!isPending}
-                      className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
-                        !isPending
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-red-500 hover:bg-red-600"
-                      }`}> Cancel</button>
-
-                    <button
-                      onClick={() => updateStatus(order._id, "accepted")}
-                      disabled={!isPending}
-                      className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
-                        !isPending
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-green-500 hover:bg-green-600" }`} >Accept</button>
-
-                    <button
-                      onClick={() => updateStatus(order._id, "delivered")}
-                      disabled={!isAccepted}
-                      className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
-                        !isAccepted
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-blue-500 hover:bg-blue-600"}`}> Deliver </button>
+    
+                    <div className="flex gap-2 mt-6">
+                      <button
+                        onClick={() => updateStatus(order._id, "cancelled")}
+                        disabled={!isPending}
+                        className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
+                          !isPending
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-red-500 hover:bg-red-600"
+                        }`}>
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => updateStatus(order._id, "accepted")}
+                        disabled={!isPending}
+                        className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
+                          !isPending
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}>
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => updateStatus(order._id, "delivered")}
+                        disabled={!isAccepted}
+                        className={`flex-1 py-2 rounded-xl font-semibold text-white transition ${
+                          !isAccepted
+                            ? "bg-gray-300 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        }`}> Deliver </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>);})}
-      </div>)}
-    </div>);
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default OrderRequests;

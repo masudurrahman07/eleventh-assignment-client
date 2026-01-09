@@ -1,11 +1,13 @@
 // src/pages/Dashboard/Admin/ManageUsers.jsx
 import React, { useEffect, useState } from "react";
+import { useTheme } from "../../contexts/ThemeContext";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Loading from "../../components/Loading";
 import Swal from "sweetalert2";
 import { FaUserShield, FaUser, FaUserCheck } from "react-icons/fa";
 
 const ManageUsers = () => {
+  const { theme } = useTheme();
   const axiosSecure = useAxiosSecure();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,41 +51,83 @@ const ManageUsers = () => {
 
   if (!users.length) {
     return (
-      <p className="text-center text-gray-500 mt-6">
+      <p 
+        className="text-center mt-6"
+        style={{ color: theme === 'dark' ? '#9ca3af' : '#6b7280' }}>
         No users to display.
       </p>
-    ); }
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4">
 
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center md:text-left"> Manage Users</h2>
+      <h2 
+        className="text-3xl font-bold mb-6 text-center md:text-left"
+        style={{ color: theme === 'dark' ? '#f9fafb' : '#1f2937' }}>
+        Manage Users
+      </h2>
 
       
       <div className="hidden md:block overflow-x-auto">
 
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <table 
+          className="min-w-full shadow-md rounded-lg overflow-hidden transition-colors duration-300"
+          style={{ backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff' }}>
 
-          <thead className="bg-gray-100">
+          <thead 
+            style={{ backgroundColor: theme === 'dark' ? '#374151' : '#f3f4f6' }}>
 
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"> Name </th>
+              <th 
+                className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider"
+                style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                Name
+              </th>
 
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"> Email </th>
+              <th 
+                className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider"
+                style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                Email
+              </th>
 
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"> Role </th>
+              <th 
+                className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider"
+                style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                Role
+              </th>
 
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"> Status</th>
+              <th 
+                className="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider"
+                style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                Status
+              </th>
 
-              <th className="px-6 py-3 text-center text-sm font-medium text-gray-700 uppercase tracking-wider"> Actions </th>
+              <th 
+                className="px-6 py-3 text-center text-sm font-medium uppercase tracking-wider"
+                style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+                Actions
+              </th>
             </tr>
 
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody 
+            className="divide-y transition-colors duration-300"
+            style={{ borderColor: theme === 'dark' ? '#374151' : '#e5e7eb' }}>
             {users.map((user) => (
-              <tr key={user._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 flex items-center whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr 
+                key={user._id} 
+                className="transition-colors duration-200"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = theme === 'dark' ? '#374151' : '#f9fafb';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}>
+                <td 
+                  className="px-6 py-4 flex items-center whitespace-nowrap text-sm font-medium"
+                  style={{ color: theme === 'dark' ? '#f9fafb' : '#111827' }}>
                   {user.role === "admin" ? (
                     <FaUserShield className="text-blue-500 mr-2" />
                   ) : user.role === "chef" ? (
@@ -94,9 +138,17 @@ const ManageUsers = () => {
                   {user.name || "N/A"}
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600"> {user.email} </td>
+                <td 
+                  className="px-6 py-4 whitespace-nowrap text-sm"
+                  style={{ color: theme === 'dark' ? '#d1d5db' : '#4b5563' }}>
+                  {user.email}
+                </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 capitalize">{user.role} </td>
+                <td 
+                  className="px-6 py-4 whitespace-nowrap text-sm capitalize"
+                  style={{ color: theme === 'dark' ? '#d1d5db' : '#4b5563' }}>
+                  {user.role}
+                </td>
 
                 <td className="px-6 py-4 whitespace-nowrap">
 

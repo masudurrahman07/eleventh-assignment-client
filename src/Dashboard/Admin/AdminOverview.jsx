@@ -1,10 +1,12 @@
 
 import React, { useEffect, useState } from 'react';
+import { useTheme } from '../../contexts/ThemeContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Loading from '../../components/Loading';
 import { FaUsers, FaClipboardList, FaCheckCircle } from 'react-icons/fa';
 
 const AdminOverview = () => {
+  const { theme } = useTheme();
   const axiosSecure = useAxiosSecure();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,22 +19,36 @@ const AdminOverview = () => {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);}};
+        setLoading(false);
+      }
+    };
     fetchStats();
   }, [axiosSecure]);
 
   if (loading) return <Loading />;
 
-  if (!stats) return <p className="text-red-500 text-center mt-6">Failed to load stats.</p>;
+  if (!stats) 
+    return (
+      <p 
+        className="text-center mt-6"
+        style={{ color: theme === 'dark' ? '#fca5a5' : '#dc2626' }}>
+        Failed to load stats.
+      </p>
+    );
 
   const cards = [
     { title: 'Total Users', value: stats.totalUsers, icon: <FaUsers size={28} />, color: 'bg-blue-500' },
     { title: 'Pending Orders', value: stats.pendingOrders, icon: <FaClipboardList size={28} />, color: 'bg-yellow-500' },
-    { title: 'Delivered Orders', value: stats.deliveredOrders, icon: <FaCheckCircle size={28} />, color: 'bg-green-500' },];
+    { title: 'Delivered Orders', value: stats.deliveredOrders, icon: <FaCheckCircle size={28} />, color: 'bg-green-500' },
+  ];
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-4">
-      <h1 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 text-center md:text-left"> Welcome, {stats.name}</h1>
+      <h1 
+        className="text-3xl md:text-4xl font-bold mb-6 text-center md:text-left"
+        style={{ color: theme === 'dark' ? '#f9fafb' : '#1f2937' }}>
+        Welcome, {stats.name}
+      </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {cards.map((card, idx) => (
@@ -46,7 +62,8 @@ const AdminOverview = () => {
               <p className="text-sm sm:text-base">{card.title}</p>
             </div>
 
-          </div>))}
+          </div>
+        ))}
       </div>
     </div>
   );

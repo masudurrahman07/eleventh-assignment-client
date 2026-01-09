@@ -1,10 +1,16 @@
 
 import React from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 import logo from '../assets/logo.jpg';
 
 const Loading = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center min-h-screen bg-gray-50 px-4">
+    <div 
+      className="flex flex-col md:flex-row justify-center items-center min-h-screen px-4 transition-colors duration-300"
+      style={{
+        backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb'}}>
       
       <img
         src={logo}
@@ -14,7 +20,8 @@ const Loading = () => {
 
       
       <h1 className="text-3xl md:text-5xl font-extrabold bg-linear-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent animate-bounce-fade text-center md:text-left">
-        LocalChefBazaar</h1>
+        LocalChefBazaar
+      </h1>
 
   
       <style>
@@ -32,7 +39,8 @@ const Loading = () => {
           .animate-bounce-fade {
             animation: bounce-fade 1.5s ease-in-out infinite;
           }
-        `}</style>
+        `}
+      </style>
     </div>
   );
 };

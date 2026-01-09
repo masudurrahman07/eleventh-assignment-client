@@ -5,15 +5,15 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { FaUserTie, FaStar, FaClock, FaHeart } from 'react-icons/fa';
 import { useAuth } from '../../auth/AuthProvider';
+import { useTheme } from '../../contexts/ThemeContext';
 import Loading from '../../components/Loading';
 import ReviewSection from '../Home/ReviewSection';
 
 const MealDetails = () => {
   const { id } = useParams();
-
   const navigate = useNavigate();
-
   const { user, token } = useAuth();
+  const { theme } = useTheme();
 
 
   const [meal, setMeal] = useState(null);
@@ -63,7 +63,13 @@ const MealDetails = () => {
 
   if (loading) return <Loading />;
 
-  if (!meal) return <div className="text-center py-20">Meal not found</div>;
+  if (!meal) return (
+    <div 
+      className="text-center py-20"
+      style={{ color: theme === 'dark' ? '#f9fafb' : '#111827' }}>
+      Meal not found
+    </div>
+  );
 
   const mealIdStr = String(meal._id ?? meal.id ?? id);
 
@@ -85,39 +91,71 @@ const MealDetails = () => {
           </h2>
         </div>
 
-        <div className="flex-1 bg-white rounded-2xl p-8 shadow-xl space-y-6">
+        <div 
+          className="flex-1 rounded-2xl p-8 shadow-xl space-y-6"
+          style={{
+            backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff'
+          }}>
 
           <div className="flex items-center gap-3">
-            <FaUserTie className="text-3xl text-emerald-600" /><div>
-
-              <p className="text-xl font-bold">{meal.chefName}</p>
-              <p className="text-sm text-gray-500">Chef ID: {meal.chefId}</p>
+            <FaUserTie className="text-3xl text-emerald-600" />
+            <div>
+              <p 
+                className="text-xl font-bold"
+                style={{ color: theme === 'dark' ? '#f9fafb' : '#111827' }}>
+                {meal.chefName}
+              </p>
+              <p 
+                className="text-sm"
+                style={{ color: theme === 'dark' ? '#9ca3af' : '#6b7280' }}>
+                Chef ID: {meal.chefId}
+              </p>
             </div>
-
           </div>
 
-          <div className="flex flex-wrap gap-6 text-lg">
-
-            <span className="flex items-center gap-2"><FaStar className="text-yellow-500" /> {meal.rating || 'New'}</span>
-
-            <span className="flex items-center gap-2"><FaClock className="text-emerald-600" />{' '}
-              {meal.estimatedDeliveryTime || '30-45 min'} </span>
+          <div 
+            className="flex flex-wrap gap-6 text-lg"
+            style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+            <span className="flex items-center gap-2">
+              <FaStar className="text-yellow-500" /> {meal.rating || 'New'}
+            </span>
+            <span className="flex items-center gap-2">
+              <FaClock className="text-emerald-600" />
+              {meal.estimatedDeliveryTime || '30-45 min'}
+            </span>
             <span className="text-2xl font-bold text-emerald-600">
-              ${meal.price} </span>
+              ${meal.price}
+            </span>
           </div>
 
-          <p> <strong>Ingredients:</strong>{' '} {meal.ingredients?.join(', ') || 'Not listed'}</p>
+          <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+            <strong>Ingredients:</strong>{' '}
+            {meal.ingredients?.join(', ') || 'Not listed'}
+          </p>
 
-          <p> <strong>Chef Experience:</strong>{' '}  {meal.chefExperience || 'Professional'} </p>
+          <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+            <strong>Chef Experience:</strong>{' '}
+            {meal.chefExperience || 'Professional'}
+          </p>
 
-    
-          <p> <strong>Delivery Area:</strong> All over Dhaka </p>
+          <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
+            <strong>Delivery Area:</strong> All over Dhaka
+          </p>
 
           <div className="flex flex-wrap gap-4 pt-4">
 
             <button
-              onClick={() => navigate(`/order/${meal._id}`, { state: { meal } })}
-              className="px-8 py-3 bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:scale-105 transition"> Order Now</button>
+              onClick={() => {
+                if (!user) {
+                  Swal.fire('Login Required', 'Please log in to place an order', 'info');
+                  navigate('/login');
+                  return;
+                }
+                navigate(`/order/${meal._id}`, { state: { meal } });
+              }}
+              className="px-8 py-3 bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold rounded-xl hover:scale-105 transition">
+              Order Now
+            </button>
 
             <button
               onClick={handleAddToFavorite}

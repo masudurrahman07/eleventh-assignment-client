@@ -1,16 +1,17 @@
 
 import React, { useEffect, useState } from 'react';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useTheme } from '../../contexts/ThemeContext';
 import Loading from '../../components/Loading';
 import Swal from 'sweetalert2';
 import ReviewCard from '../../components/ReviewCard';
 
 const MyReviews = () => {
   const axiosSecure = useAxiosSecure();
+  const { theme } = useTheme();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mealsMap, setMealsMap] = useState({}); 
-
+  const [mealsMap, setMealsMap] = useState({});
   const [editingReview, setEditingReview] = useState(null);
   const [editRating, setEditRating] = useState(5);
   const [editComment, setEditComment] = useState('');
@@ -90,54 +91,108 @@ useEffect(() => {
   if (loading) return <Loading />;
 
   return (
-    <div className="max-w-6xl mx-auto py-6">
+    <div 
+      className="min-h-screen py-6 px-4"
+      style={{
+        backgroundColor: theme === 'dark' ? '#111827' : '#f9fafb',
+        color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
+      }}>
+      <div className="max-w-6xl mx-auto">
+        <h2 
+          className="text-2xl font-bold mb-6"
+          style={{ color: theme === 'dark' ? '#f3f4f6' : '#1f2937' }}>
+          My Reviews
+        </h2>
 
-      <h2 className="text-2xl font-bold mb-6">My Reviews</h2>
+        {reviews.length === 0 ? (
+          <p style={{ color: theme === 'dark' ? '#9ca3af' : '#6b7280' }}>
+            You haven't submitted any reviews yet.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map(review => (
+              <ReviewCard
+                key={review._id}
+                review={review}
+                onUpdate={() => openEditModal(review)}
+                onDelete={() => handleDelete(review._id)}/>
+            ))}
+          </div>
+        )}
 
-      {reviews.length === 0 ? (
-        <p className="text-gray-500">You haven't submitted any reviews yet.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {editingReview && (
+          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+            <div 
+              className="p-6 rounded-xl w-full max-w-md shadow-2xl space-y-4"
+              style={{
+                backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
+                border: theme === 'dark' ? '1px solid #374151' : 'none'
+              }}>
+              <h2 
+                className="text-xl font-bold"
+                style={{ color: theme === 'dark' ? '#f3f4f6' : '#1f2937' }}>
+                Edit Review
+              </h2>
 
-          {reviews.map(review => (
-            <ReviewCard
-              key={review._id}
-              review={review}
-              onUpdate={() => openEditModal(review)}
-              onDelete={() => handleDelete(review._id)}/>))}
-        </div>)}
+              <div>
+                <label 
+                  className="font-semibold"
+                  style={{ color: theme === 'dark' ? '#f3f4f6' : '#374151' }}>
+                  Rating:
+                </label>
+                <select
+                  className="w-full mt-1 border p-2 rounded"
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#374151' : '#ffffff',
+                    borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
+                    color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
+                  }}
+                  value={editRating}
+                  onChange={(e) => setEditRating(parseInt(e.target.value))}>
+                  {[5,4,3,2,1].map(num => (
+                    <option key={num} value={num}>{num} Stars</option>
+                  ))}
+                </select>
+              </div>
 
-      {editingReview && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-2xl space-y-4">
-            <h2 className="text-xl font-bold">Edit Review</h2>
+              <div>
+                <label 
+                  className="font-semibold"
+                  style={{ color: theme === 'dark' ? '#f3f4f6' : '#374151' }}>
+                  Comment:
+                </label>
+                <textarea
+                  className="w-full mt-1 border p-2 rounded h-28"
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#374151' : '#ffffff',
+                    borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
+                    color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
+                  }}
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  placeholder="Update your experience..." />
+              </div>
 
-            <div>
-              <label className="font-semibold">Rating:</label>
-              <select
-                className="w-full mt-1 border p-2 rounded"
-                value={editRating}
-                onChange={(e) => setEditRating(parseInt(e.target.value))}>
-                {[5,4,3,2,1].map(num => (
-                  <option key={num} value={num}>{num} Stars</option>))}
-              </select>
-            </div>
-
-            <div>
-              <label className="font-semibold">Comment:</label>
-              <textarea
-                className="w-full mt-1 border p-2 rounded h-28"
-                value={editComment}
-                onChange={(e) => setEditComment(e.target.value)}
-                placeholder="Update your experience..."/>
-            </div>
-
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setEditingReview(null)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"> Cancel</button>
-              <button onClick={submitEdit} className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600"> Update</button>
+              <div className="flex justify-end gap-3">
+                <button 
+                  onClick={() => setEditingReview(null)} 
+                  className="px-4 py-2 rounded hover:opacity-80 transition"
+                  style={{
+                    backgroundColor: theme === 'dark' ? '#4b5563' : '#e5e7eb',
+                    color: theme === 'dark' ? '#f3f4f6' : '#374151'
+                  }}>
+                  Cancel
+                </button>
+                <button 
+                  onClick={submitEdit} 
+                  className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">
+                  Update
+                </button>
+              </div>
             </div>
           </div>
-        </div>)}
+        )}
+      </div>
     </div>
   );
 };
