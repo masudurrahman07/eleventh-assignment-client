@@ -94,7 +94,7 @@ const ContactUs = () => {
                       backgroundColor: theme === 'dark' ? '#374151' : '#f1f5f9',
                       color: theme === 'dark' ? '#f9fafb' : '#334155'
                     }}
-                    placeholder="Gordon"/>
+                    placeholder="John"/>
                 </div>
                 <div className="space-y-1">
                   <label 
@@ -109,7 +109,7 @@ const ContactUs = () => {
                       backgroundColor: theme === 'dark' ? '#374151' : '#f1f5f9',
                       color: theme === 'dark' ? '#f9fafb' : '#334155'
                     }}
-                    placeholder="Ramsay" />
+                    placeholder="Smith" />
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ const ContactUs = () => {
                     backgroundColor: theme === 'dark' ? '#374151' : '#f1f5f9',
                     color: theme === 'dark' ? '#f9fafb' : '#334155'
                   }}
-                  placeholder="chef@localbazaar.com"/>
+                  placeholder="your.email@example.com"/>
               </div>
 
               <div className="space-y-1">
@@ -163,7 +163,7 @@ const ContactUs = () => {
                     backgroundColor: theme === 'dark' ? '#374151' : '#f1f5f9',
                     color: theme === 'dark' ? '#f9fafb' : '#334155'
                   }}
-                  placeholder="Tell us about your project, needs, and timeline."></textarea>
+                  placeholder="Tell us about your inquiry and how we can help you."></textarea>
               </div>
 
               <button 

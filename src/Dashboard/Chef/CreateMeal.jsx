@@ -121,7 +121,7 @@ const uploadToBackend = async (file) => {
                 borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
                 color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
               }}
-              placeholder="Enter delicious meal name" />
+              placeholder="Enter meal name" />
             {errors.foodName && (
               <span className="text-red-500 text-sm flex items-center gap-1">
                 Food Name is required
@@ -145,7 +145,7 @@ const uploadToBackend = async (file) => {
                 borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
                 color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
               }}
-              placeholder="Your chef name"
+              placeholder="Chef name"
             />
             {errors.chefName && (
               <span className="text-red-500 text-sm">Chef Name is required</span>
@@ -213,7 +213,7 @@ const uploadToBackend = async (file) => {
                 borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
                 color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
               }}
-              placeholder="tomatoes, onions, garlic, olive oil, basil"/>
+              placeholder="tomatoes, onions, garlic, herbs"/>
             {errors.ingredients && (
               <span className="text-red-500 text-sm">Ingredients are required</span>
             )}
@@ -236,7 +236,7 @@ const uploadToBackend = async (file) => {
                   borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
                   color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
                 }}
-                placeholder="30-45 minutes"/>
+                placeholder="30-40 minutes"/>
             </div>
 
             <div className="space-y-2">
@@ -253,7 +253,7 @@ const uploadToBackend = async (file) => {
                   borderColor: theme === 'dark' ? '#4b5563' : '#d1d5db',
                   color: theme === 'dark' ? '#f3f4f6' : '#1f2937'
                 }}
-                placeholder="5 years professional cooking"/>
+                placeholder="Professional cooking experience"/>
             </div>
           </div>
 

@@ -74,7 +74,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-linear-to-br from-emerald-200 via-teal-200 to-amber-200 shadow-md sticky top-0 z-50 transition-colors duration-300 border-b border-emerald-300">
+    <nav className="bg-gradient-to-br from-emerald-200 via-emerald-300 to-emerald-400 shadow-md sticky top-0 z-50 transition-colors duration-300 border-b border-emerald-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
         
@@ -82,7 +82,7 @@ const Navbar = () => {
             <img
               src={logo}
               alt="LocalChefBazaar Logo"
-              className="h-14 w-14 rounded-full"/>
+              className="h-14 w-14 rounded-lg"/>
 
             <span className="font-bold text-xl text-slate-800 drop-shadow-sm"> LocalChefBazaar </span>
           </Link>
@@ -112,7 +112,7 @@ const Navbar = () => {
               {theme === 'light' ? (
                 <Moon className="w-5 h-5 text-slate-700" />
               ) : (
-                <Sun className="w-5 h-5 text-yellow-600" />
+                <Sun className="w-5 h-5 text-slate-600" />
               )}
             </button>
 
@@ -120,19 +120,19 @@ const Navbar = () => {
             {user ? (
               <div className="flex items-center space-x-3">
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 p-1 rounded-full hover:bg-white/20 transition-colors">
+                  <button className="flex items-center space-x-2 p-1 rounded-lg hover:bg-white/20 transition-colors">
                     <img
                       src={user.profileImage || "https://i.ibb.co/3rQZVgv/default-user.png"}
                       alt="User Avatar"
-                      className="h-10 w-10 rounded-full border-2 border-slate-700"/>
+                      className="h-10 w-10 rounded-lg border-2 border-slate-700"/>
                   </button>
                   
              
                   <div 
-                    className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-200 transition-all duration-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible">
+                    className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg py-1 z-50 border border-slate-200 transition-all duration-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible">
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                      className="w-full text-left px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors">
                       Sign out
                     </button>
                   </div>
@@ -164,7 +164,7 @@ const Navbar = () => {
               {theme === 'light' ? (
                 <Moon className="w-4 h-4 text-slate-700" />
               ) : (
-                <Sun className="w-4 h-4 text-yellow-600" />
+                <Sun className="w-4 h-4 text-slate-600" />
               )}
             </button>
 
@@ -211,7 +211,7 @@ const Navbar = () => {
               <img
                 src={logo}
                 alt="LocalChefBazaar Logo"
-                className="h-10 w-10 rounded-full"/>
+                className="h-10 w-10 rounded-lg"/>
               <span className="font-bold text-lg text-slate-800">
                 LocalChefBazaar
               </span>

@@ -152,7 +152,7 @@ const MyFavorites = () => {
             {favorites.map(fav => (
               <div
                 key={fav._id}
-                className="rounded-2xl p-4 flex flex-col gap-2 shadow-md"
+                className="rounded-lg p-4 flex flex-col gap-2 shadow-md"
                 style={{
                   background: theme === 'dark' 
                     ? 'linear-gradient(to right, #1f2937, #374151)' 

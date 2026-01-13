@@ -205,7 +205,7 @@ const MyProfile = () => {
               ) : (
                 <p 
                   style={{ color: theme === 'dark' ? '#d1d5db' : '#6b7280' }}>
-                  {profile.address || 'N/A'}
+                  {profile.address || 'Address not provided'}
                 </p>
               )}
             </div>
@@ -248,7 +248,7 @@ const MyProfile = () => {
                 <FaIdBadge className="text-orange-500" />
                 <p 
                   style={{ color: theme === 'dark' ? '#d1d5db' : '#6b7280' }}>
-                  Chef ID: <span className="font-medium">{profile.chefId || 'N/A'}</span>
+                  Chef ID: <span className="font-medium">{profile.chefId || 'Not assigned'}</span>
                 </p>
               </div>
             )}

@@ -55,7 +55,7 @@ const stripePromise = loadStripe(
 
       
       {showPayment && (
-        <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+        <div className="mt-6">
           <Elements stripe={stripePromise}>
             <CheckoutForm
               orderId={order._id}

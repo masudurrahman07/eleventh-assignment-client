@@ -70,14 +70,14 @@ const MyOrders = () => {
         {orders.map((order) => (
           <div
             key={order._id}
-            className="shadow-lg rounded-2xl p-6 flex flex-col md:flex-row md:justify-between md:items-center"
+            className="shadow-lg rounded-lg p-6 flex flex-col md:flex-row md:justify-between md:items-center"
             style={{
               backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
               border: theme === 'dark' ? '1px solid #374151' : 'none'
             }}>
             <div className="space-y-1">
               <p style={{ color: theme === 'dark' ? '#f3f4f6' : '#1f2937' }}>
-                <span className="font-semibold">Meal:</span> {order.mealName || order.foodName || "N/A"}
+                <span className="font-semibold">Meal:</span> {order.mealName || order.foodName || "Meal information unavailable"}
               </p>
               <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
                 <span className="font-semibold">Quantity:</span> {order.quantity}
@@ -95,7 +95,7 @@ const MyOrders = () => {
                 <span className="font-semibold">Chef ID:</span> {order.chefId}
               </p>
               <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
-                <span className="font-semibold">Delivery Time:</span> {order.estimatedDeliveryTime || "N/A"}
+                <span className="font-semibold">Delivery Time:</span> {order.estimatedDeliveryTime || "To be confirmed"}
               </p>
               <p style={{ color: theme === 'dark' ? '#d1d5db' : '#374151' }}>
                 <span className="font-semibold">Order Status:</span> {order.orderStatus}
@@ -108,7 +108,7 @@ const MyOrders = () => {
             {order.orderStatus.toLowerCase() === "accepted" && order.paymentStatus.toLowerCase() === "pending" && (
               <button
                 onClick={() => navigate(`/dashboard/user/pay/${order._id}`)}
-                className="mt-4 md:mt-0 px-6 py-2 bg-green-500 text-white rounded-2xl shadow hover:bg-green-600 transition">
+                className="mt-4 md:mt-0 px-6 py-2 bg-emerald-500 text-white rounded-lg shadow hover:bg-emerald-600 transition">
                 Pay Now
               </button>
             )}

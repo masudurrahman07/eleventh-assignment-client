@@ -213,7 +213,7 @@ const Login = () => {
               borderColor: '#e67e22',
               color: '#e67e22' }}>
             <Shield size={22} />
-            Admin Login (Demo)
+            Admin Quick Login
           </button>
 
           <div className="flex justify-between items-center mt-2 px-2">
